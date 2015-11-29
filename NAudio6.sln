@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw", "NAudio6\ndaw.csproj", "{A2C7208A-71C2-4179-86BC-C336B28974DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw.PerformanceTest", "ndaw.PerformanceTest\ndaw.PerformanceTest.csproj", "{15651AC6-DB64-4443-AA67-B41BB6FD6439}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw.Tests", "ndaw.Tests\ndaw.Tests.csproj", "{30AD95A0-B234-40AD-86EA-C55F36477C45}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2C7208A-71C2-4179-86BC-C336B28974DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2C7208A-71C2-4179-86BC-C336B28974DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2C7208A-71C2-4179-86BC-C336B28974DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2C7208A-71C2-4179-86BC-C336B28974DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15651AC6-DB64-4443-AA67-B41BB6FD6439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15651AC6-DB64-4443-AA67-B41BB6FD6439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15651AC6-DB64-4443-AA67-B41BB6FD6439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15651AC6-DB64-4443-AA67-B41BB6FD6439}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30AD95A0-B234-40AD-86EA-C55F36477C45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30AD95A0-B234-40AD-86EA-C55F36477C45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30AD95A0-B234-40AD-86EA-C55F36477C45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30AD95A0-B234-40AD-86EA-C55F36477C45}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
