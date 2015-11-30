@@ -18,8 +18,6 @@ namespace ndaw
 {
     public partial class Form1 : Form
     {
-        private FourierForm fourierForm;
-
         private AsioOut asioDriver = null;
         private AsioCard asioCard;
 
@@ -55,9 +53,6 @@ namespace ndaw
         private void Form1_Load(object sender, EventArgs e)
         {
             cmbDevice.Items.AddRange(AsioOut.GetDriverNames());
-
-            fourierForm = new FourierForm();
-            fourierForm.Show();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -73,7 +68,6 @@ namespace ndaw
                 asioDriver.Stop();
                 asioDriver.Dispose();
             }
-            fourierForm.Close();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -137,7 +131,7 @@ namespace ndaw
 
             fourier = new FourierTransform(2048);
             fourierNode = new MonoSignalNode(monoFormat, fourier);
-            fourier.DataReady += fourierForm.fourier_DataReady;
+            fourier.DataReady += fourierControl.fourier_DataReady;
 
             flanger = new Flanger();
             flangerNode = new MonoSignalNode(monoFormat, flanger);
@@ -179,7 +173,7 @@ namespace ndaw
 
             fourier = new FourierTransform(2048);
             fourierNode = new MonoSignalNode(stereoFormat, fourier);
-            fourier.DataReady += fourierForm.fourier_DataReady;
+            fourier.DataReady += fourierControl.fourier_DataReady;
 
             fourierNode.CentreIn.Source = stereoFilterNode.LeftOut;
 

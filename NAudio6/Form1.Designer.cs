@@ -36,6 +36,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.cboChannelIn = new System.Windows.Forms.ComboBox();
             this.chkLowPass = new System.Windows.Forms.CheckBox();
+            this.fourierControl = new ndaw.Graphics.Controls.FourierControl();
             this.SuspendLayout();
             // 
             // cmbDevice
@@ -107,7 +108,7 @@
             this.chkLowPass.AutoSize = true;
             this.chkLowPass.Checked = true;
             this.chkLowPass.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkLowPass.Location = new System.Drawing.Point(358, 244);
+            this.chkLowPass.Location = new System.Drawing.Point(315, 153);
             this.chkLowPass.Name = "chkLowPass";
             this.chkLowPass.Size = new System.Drawing.Size(72, 17);
             this.chkLowPass.TabIndex = 7;
@@ -115,11 +116,19 @@
             this.chkLowPass.UseVisualStyleBackColor = true;
             this.chkLowPass.CheckedChanged += new System.EventHandler(this.chkLowPass_CheckedChanged);
             // 
+            // fourierControl
+            // 
+            this.fourierControl.Location = new System.Drawing.Point(182, 196);
+            this.fourierControl.Name = "fourierControl";
+            this.fourierControl.Size = new System.Drawing.Size(506, 298);
+            this.fourierControl.TabIndex = 8;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(718, 319);
+            this.ClientSize = new System.Drawing.Size(733, 516);
+            this.Controls.Add(this.fourierControl);
             this.Controls.Add(this.chkLowPass);
             this.Controls.Add(this.cboChannelIn);
             this.Controls.Add(this.cboChannelOut);
@@ -147,6 +156,7 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ComboBox cboChannelIn;
         private System.Windows.Forms.CheckBox chkLowPass;
+        private Graphics.Controls.FourierControl fourierControl;
     }
 }
 

@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DXGI = SharpDX.DXGI;
 using D2D = SharpDX.Direct2D1;
 using D3D11 = SharpDX.Direct3D11;
 using System.Windows.Forms;
 using SharpDX;
 
-namespace ndaw.Graphics
+namespace ndaw.Graphics.Devices
 {
     public class RenderContext: IRenderContext
     {

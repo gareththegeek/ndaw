@@ -2,7 +2,7 @@
 using D3D11 = SharpDX.Direct3D11;
 using System.Windows.Forms;
 
-namespace ndaw.Graphics
+namespace ndaw.Graphics.Devices
 {
     public interface IDeviceManager: IDisposable
     {

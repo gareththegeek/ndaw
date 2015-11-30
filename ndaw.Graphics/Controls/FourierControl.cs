@@ -1,41 +1,27 @@
-﻿using ndaw.Core.Fourier;
-using SharpDX.Direct3D11;
-using DXGI = SharpDX.DXGI;
+﻿using NAudio.Utils;
+using ndaw.Core.Fourier;
+using SharpDX;
+using SharpDX.Direct2D1;
 using System;
 using System.Windows.Forms;
-using SharpDX.Direct2D1;
-using SharpDX.Direct3D;
-using SharpDX;
-using System.Threading;
-using NAudio.Utils;
-using ndaw.Graphics;
 
-namespace ndaw
+namespace ndaw.Graphics.Controls
 {
-    public partial class FourierForm : Form
+    public partial class FourierControl : DXRealTimeControlBase
     {
         private SolidColorBrush solidBrush;
-
-        private IDeviceManager deviceManager;
-        private IRenderContext renderContext;
 
         private int fourierLength;
         private float[] fourierReal;
         private float[] fourierImaginary;
         private object fourierDataLock = new object();
-        private object renderLock = new object();
 
-        public FourierForm()
-        {
-            InitializeComponent();
-        }
-
-        private bool stopped = false;
         private float smoothing = 0.95f;
         private float[] history;
+
         public void fourier_DataReady(object sender, FourierTransformEventArgs e)
         {
-            if (stopped) return;
+            if (abortRendering) return;
             if (e.Channel != 0) return;
 
             lock (fourierDataLock)
@@ -57,8 +43,22 @@ namespace ndaw
         private float maximumFourierValue = float.MinValue;
         private float fourierScale = 1f;
 
-        private void render()
+        public FourierControl()
         {
+            InitializeComponent();
+        }
+
+        public void FourierControl_Load(object sender, EventArgs e)
+        {
+            if (DesignMode) return;
+
+            solidBrush = new SolidColorBrush(context.RenderTarget, Color.White);
+        }
+
+        protected override void DXPaint()
+        {
+            if (DesignMode) return;
+
             float[] real = null;
             float[] imaginary = null;
 
@@ -79,14 +79,14 @@ namespace ndaw
 
             lock (renderLock)
             {
-                if (stopped) return;
+                if (abortRendering) return;
 
-                renderContext.Activate();
+                context.Activate();
 
-                renderContext.RenderTarget.BeginDraw();
-                renderContext.RenderTarget.Clear(Color.Black);
+                context.RenderTarget.BeginDraw();
+                context.RenderTarget.Clear(Color.Black);
                 solidBrush.Color = new Color4(1, 1, 1, 1);
-                
+
                 if (real != null && imaginary != null)
                 {
                     if (real.Length != imaginary.Length)
@@ -120,7 +120,7 @@ namespace ndaw
                                 minI = i;
                             }
 
-                            var height = panel1.ClientSize.Height;
+                            var height = ClientSize.Height;
 
                             //var scaled = (int)(mag * ClientSize.Height);
                             history = BufferHelpers.Ensure(history, fourierLength * sizeof(float));
@@ -131,7 +131,7 @@ namespace ndaw
                             //var scaled = mag * panel1.Height;
                             //g.DrawLine(pen, i, panel1.Height, i, panel1.Height - scaled);
 
-                            renderContext.RenderTarget.DrawLine(
+                            context.RenderTarget.DrawLine(
                                 new Vector2 { X = i, Y = height },
                                 new Vector2 { X = i, Y = height - scaled },
                                 solidBrush);
@@ -148,46 +148,10 @@ namespace ndaw
                     fourierScale = maximumFourierValue - minimumFourierValue;
                 }
 
-                renderContext.RenderTarget.EndDraw();
+                context.RenderTarget.EndDraw();
 
-                renderContext.Present();
-            }
-        }
-
-        private void FourierForm_Load(object sender, EventArgs e)
-        {
-            deviceManager = new DeviceManager();
-            renderContext = new RenderContext(deviceManager, panel1);
-            
-            solidBrush = new SolidColorBrush(renderContext.RenderTarget, Color.White);
-            
-            new Thread(() =>
-                {
-                    while (!stopped)
-                    {
-                        if (stopped)
-                        {
-                            Thread.CurrentThread.Abort();
-                            return;
-                        }
-
-                        Thread.Sleep(1000 / 120);
-                        render();
-                    }
-                }).Start();
-        }
-
-        private void FourierForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            stopped = true;
-
-            lock (renderLock)
-            {
-                if (solidBrush != null) solidBrush.Dispose();
-                if (renderContext != null) renderContext.Dispose();
-                if (deviceManager != null) deviceManager.Dispose();
+                context.Present();
             }
         }
     }
 }
-

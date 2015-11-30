@@ -3,13 +3,26 @@ using System;
 using D3D = SharpDX.Direct3D;
 using System.Windows.Forms;
 
-namespace ndaw.Graphics
+namespace ndaw.Graphics.Devices
 {
     public class DeviceManager: IDeviceManager
     {
         private bool disposed;
 
         public D3D11.DeviceContext DeviceContext { get; private set; }
+
+        private static DeviceManager instance;
+        public static DeviceManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new DeviceManager();
+                }
+                return instance;
+            }
+        }
 
         public DeviceManager()
         {
