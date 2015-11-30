@@ -5,9 +5,11 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw", "NAudio6\ndaw.csproj", "{A2C7208A-71C2-4179-86BC-C336B28974DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw.PerformanceTest", "ndaw.PerformanceTest\ndaw.PerformanceTest.csproj", "{15651AC6-DB64-4443-AA67-B41BB6FD6439}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw.Core.PerformanceTest", "ndaw.PerformanceTest\ndaw.Core.PerformanceTest.csproj", "{15651AC6-DB64-4443-AA67-B41BB6FD6439}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw.Tests", "ndaw.Tests\ndaw.Tests.csproj", "{30AD95A0-B234-40AD-86EA-C55F36477C45}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw.Core.Tests", "ndaw.Tests\ndaw.Core.Tests.csproj", "{30AD95A0-B234-40AD-86EA-C55F36477C45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw.Core", "ndaw.Core\ndaw.Core.csproj", "{B6552323-B56F-4C65-8CE3-2BA5984A3F13}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{30AD95A0-B234-40AD-86EA-C55F36477C45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30AD95A0-B234-40AD-86EA-C55F36477C45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30AD95A0-B234-40AD-86EA-C55F36477C45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6552323-B56F-4C65-8CE3-2BA5984A3F13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6552323-B56F-4C65-8CE3-2BA5984A3F13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6552323-B56F-4C65-8CE3-2BA5984A3F13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6552323-B56F-4C65-8CE3-2BA5984A3F13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

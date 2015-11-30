@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ndaw.Core.Tests")]
+[assembly: AssemblyTitle("ndaw.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ndaw.Core.Tests")]
+[assembly: AssemblyProduct("ndaw.Core")]
 [assembly: AssemblyCopyright("Copyright © Gareth Williams 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("aa302680-375f-4054-b7ae-d0457bcfcd99")]
+[assembly: Guid("7d43aca7-f149-47c0-956f-077331d87641")]
 
 // Version information for an assembly consists of the following four values:
 //

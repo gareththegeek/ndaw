@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace ndaw.PerformanceTest
+namespace ndaw.Core.PerformanceTest
 {
     public static class Helpers
     {

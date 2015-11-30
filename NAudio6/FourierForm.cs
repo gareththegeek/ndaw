@@ -1,4 +1,4 @@
-﻿using ndaw.Fourier;
+﻿using ndaw.Core.Fourier;
 using SharpDX.Direct3D11;
 using DXGI = SharpDX.DXGI;
 using System;

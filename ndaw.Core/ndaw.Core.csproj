@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A2C7208A-71C2-4179-86BC-C336B28974DE}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{B6552323-B56F-4C65-8CE3-2BA5984A3F13}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ndaw</RootNamespace>
-    <AssemblyName>ndaw</AssemblyName>
+    <RootNamespace>ndaw.Core</RootNamespace>
+    <AssemblyName>ndaw.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>4dc2608d</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>fcb82ca5</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,17 +21,16 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NAudio">
@@ -44,74 +42,62 @@
     <Reference Include="SharpDX.Direct2D1">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct2D1.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Direct3D11">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll</HintPath>
-    </Reference>
     <Reference Include="SharpDX.DXGI">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FourierForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FourierForm.Designer.cs">
-      <DependentUpon>FourierForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="Effects\Flanger.cs" />
+    <Compile Include="Filters\ComplexFilter.cs" />
+    <Compile Include="Filters\DigitalFilter.cs" />
+    <Compile Include="Filters\FilterFunctions\BandPassFilterFunction.cs" />
+    <Compile Include="Filters\FilterFunctions\BandStopFilterFunction.cs" />
+    <Compile Include="Filters\FilterFunctions\HighPassFilterFunction.cs" />
+    <Compile Include="Filters\FilterFunctions\IFilterFunction.cs" />
+    <Compile Include="Filters\FilterFunctions\LowPassFilterFunction.cs" />
+    <Compile Include="Filters\Implementations\FirFilter.cs" />
+    <Compile Include="Filters\Implementations\IFilterImplementation.cs" />
+    <Compile Include="Filters\WindowFunctions\BlackmanHarrisWindowFunction.cs" />
+    <Compile Include="Filters\WindowFunctions\BlackmanWindowFunction.cs" />
+    <Compile Include="Filters\WindowFunctions\HammingWindowFunction.cs" />
+    <Compile Include="Filters\WindowFunctions\IWindowFunction.cs" />
+    <Compile Include="Filters\WindowFunctions\RectangularWindowFunction.cs" />
+    <Compile Include="Fourier\FastFourierTransform.cs" />
+    <Compile Include="Fourier\FourierTransformEventArgs.cs" />
+    <Compile Include="Oscillators\IOscillator.cs" />
+    <Compile Include="Oscillators\SineWave.cs" />
+    <Compile Include="Oscillators\SquareWave.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FourierForm.resx">
-      <DependentUpon>FourierForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
+    <Compile Include="Routing\IMonoSignalNode.cs" />
+    <Compile Include="Routing\ISignalNode.cs" />
+    <Compile Include="Routing\ISignalProcess.cs" />
+    <Compile Include="Routing\ISignalSink.cs" />
+    <Compile Include="Routing\ISignalSource.cs" />
+    <Compile Include="Routing\IStereoSignalNode.cs" />
+    <Compile Include="Routing\MonoSignalNode.cs" />
+    <Compile Include="Routing\RoutingEventArgs.cs" />
+    <Compile Include="Routing\SignalSink.cs" />
+    <Compile Include="Routing\SignalSource.cs" />
+    <Compile Include="Routing\StereoSignalNode.cs" />
+    <Compile Include="Soundcard\Asio\AsioCard.cs" />
+    <Compile Include="Soundcard\Asio\AsioInputMapper.cs" />
+    <Compile Include="Soundcard\Asio\AsioOutputMapper.cs" />
+    <Compile Include="Soundcard\ISoundcard.cs" />
+    <Compile Include="Soundcard\Wave\WaveCard.cs" />
+    <Compile Include="Soundcard\Wave\WaveInputMapper.cs" />
+    <Compile Include="Soundcard\Wave\WaveOutputMapper.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ndaw.Core\ndaw.Core.csproj">
-      <Project>{b6552323-b56f-4c65-8ce3-2ba5984a3f13}</Project>
-      <Name>ndaw.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />

@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ndaw.Filters.Implementations;
+using ndaw.Core.Filters.Implementations;
 using NAudio.Wave;
 
-namespace ndaw.Tests
+namespace ndaw.Core.Tests
 {
     [TestClass]
     public class FirFilterTests
