@@ -8,19 +8,16 @@ using SharpDX.Direct3D;
 using SharpDX;
 using System.Threading;
 using NAudio.Utils;
+using ndaw.Graphics;
 
 namespace ndaw
 {
     public partial class FourierForm : Form
     {
-        private Device device;
-        private DXGI.SwapChain swapChain;
-        private DeviceContext context;
-        private Texture2D backbuffer;
-        private RenderTargetView backbufferView;
-
-        private RenderTarget renderTarget;
         private SolidColorBrush solidBrush;
+
+        private IDeviceManager deviceManager;
+        private IRenderContext renderContext;
 
         private int fourierLength;
         private float[] fourierReal;
@@ -84,8 +81,10 @@ namespace ndaw
             {
                 if (stopped) return;
 
-                renderTarget.BeginDraw();
-                renderTarget.Clear(Color.Black);
+                renderContext.Activate();
+
+                renderContext.RenderTarget.BeginDraw();
+                renderContext.RenderTarget.Clear(Color.Black);
                 solidBrush.Color = new Color4(1, 1, 1, 1);
                 
                 if (real != null && imaginary != null)
@@ -121,18 +120,20 @@ namespace ndaw
                                 minI = i;
                             }
 
+                            var height = panel1.ClientSize.Height;
+
                             //var scaled = (int)(mag * ClientSize.Height);
                             history = BufferHelpers.Ensure(history, fourierLength * sizeof(float));
 
                             history[i] = smoothing * history[i] + ((1 - smoothing) * mag);
-                            var scaled = (int)(((history[i] - minimumFourierValue) / (fourierScale)) * ClientSize.Height);
+                            var scaled = (int)(((history[i] - minimumFourierValue) / (fourierScale)) * height);
 
                             //var scaled = mag * panel1.Height;
                             //g.DrawLine(pen, i, panel1.Height, i, panel1.Height - scaled);
 
-                            renderTarget.DrawLine(
-                                new Vector2 { X = i, Y = ClientSize.Height },
-                                new Vector2 { X = i, Y = ClientSize.Height - scaled },
+                            renderContext.RenderTarget.DrawLine(
+                                new Vector2 { X = i, Y = height },
+                                new Vector2 { X = i, Y = height - scaled },
                                 solidBrush);
                         }
                     }
@@ -147,54 +148,19 @@ namespace ndaw
                     fourierScale = maximumFourierValue - minimumFourierValue;
                 }
 
-                renderTarget.EndDraw();
+                renderContext.RenderTarget.EndDraw();
 
-                swapChain.Present(0, DXGI.PresentFlags.None);
+                renderContext.Present();
             }
         }
 
         private void FourierForm_Load(object sender, EventArgs e)
         {
-            DXGI.SwapChainDescription description = new DXGI.SwapChainDescription()
-            {
-                BufferCount = 1,
-                ModeDescription = 
-                    new DXGI.ModeDescription(ClientSize.Width, ClientSize.Height,
-                                        new DXGI.Rational(60, 1), DXGI.Format.R8G8B8A8_UNorm),
-                IsWindowed = true,
-                SampleDescription = new DXGI.SampleDescription(1, 0),
-                SwapEffect = DXGI.SwapEffect.Discard,
-                Usage = DXGI.Usage.RenderTargetOutput,
-                OutputHandle = this.Handle
-            };
-
-            Device.CreateWithSwapChain(
-                DriverType.Hardware,
-                /*DeviceCreationFlags.Debug |*/ DeviceCreationFlags.BgraSupport, 
-                description,
-                out device,
-                out swapChain);
-
-            context = device.ImmediateContext;
-
-            backbuffer = Texture2D.FromSwapChain<Texture2D>(swapChain, 0);
-            backbufferView = new RenderTargetView(device, backbuffer);
-
-            var factory = new Factory();
-            var surface = backbuffer.QueryInterface<DXGI.Surface>();
-            renderTarget = new RenderTarget(
-                factory, 
-                surface,
-                new RenderTargetProperties(new PixelFormat(DXGI.Format.Unknown, AlphaMode.Premultiplied)));
-            solidBrush = new SolidColorBrush(renderTarget, Color.White);
-
-            context.OutputMerger.SetTargets(backbufferView);
-
-            var viewport = new Viewport(0, 0, this.ClientSize.Width, this.ClientSize.Height, 0f, 1f);
-            context.Rasterizer.SetViewport(viewport);
-
-            swapChain.Present(0, DXGI.PresentFlags.None);
-
+            deviceManager = new DeviceManager();
+            renderContext = new RenderContext(deviceManager, panel1);
+            
+            solidBrush = new SolidColorBrush(renderContext.RenderTarget, Color.White);
+            
             new Thread(() =>
                 {
                     while (!stopped)
@@ -217,13 +183,9 @@ namespace ndaw
 
             lock (renderLock)
             {
-                solidBrush.Dispose();
-                renderTarget.Dispose();
-                device.Dispose();
-                swapChain.Dispose();
-                context.Dispose();
-                backbufferView.Dispose();
-                backbuffer.Dispose();
+                if (solidBrush != null) solidBrush.Dispose();
+                if (renderContext != null) renderContext.Dispose();
+                if (deviceManager != null) deviceManager.Dispose();
             }
         }
     }

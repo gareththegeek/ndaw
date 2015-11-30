@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw.Core.Tests", "ndaw.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw.Core", "ndaw.Core\ndaw.Core.csproj", "{B6552323-B56F-4C65-8CE3-2BA5984A3F13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw.Graphics", "ndaw.Graphics\ndaw.Graphics.csproj", "{5006E35A-2E7A-48B3-BC77-E9BBD2B0FF9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B6552323-B56F-4C65-8CE3-2BA5984A3F13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6552323-B56F-4C65-8CE3-2BA5984A3F13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6552323-B56F-4C65-8CE3-2BA5984A3F13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5006E35A-2E7A-48B3-BC77-E9BBD2B0FF9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5006E35A-2E7A-48B3-BC77-E9BBD2B0FF9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5006E35A-2E7A-48B3-BC77-E9BBD2B0FF9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5006E35A-2E7A-48B3-BC77-E9BBD2B0FF9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
