@@ -9,12 +9,24 @@ namespace ndaw.Core.Routing
     {
         public string Name { get; set; }
 
+        public ISignalNode Owner { get; private set; }
+
         private List<ISignalSink> sinks = new List<ISignalSink>();
         private float[][] sinkBuffers;
 
         public bool IsMapped
         {
             get { return sinks.Count > 0; }
+        }
+
+        public SignalSource(ISignalNode owner)
+        {
+            if (owner == null)
+            {
+                throw new ArgumentNullException("owner", "SignalSource must have an owner");
+            }
+
+            this.Owner = owner;
         }
 
         public void AddSink(ISignalSink sink)

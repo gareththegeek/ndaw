@@ -28,7 +28,7 @@ namespace ndaw.Core.Soundcard.Wave
 
         private byte[] rawBuffer;
 
-        public void Initialise(WaveFormat format, WaveOut driver)
+        public void Initialise(ISignalNode owner, WaveFormat format, WaveOut driver)
         {
             if (driver == null)
             {
@@ -56,15 +56,15 @@ namespace ndaw.Core.Soundcard.Wave
 
             driver.Init(OutputBuffer);
 
-            mapOutputs();
+            mapOutputs(owner);
         }
 
-        private void mapOutputs()
+        private void mapOutputs(ISignalNode owner)
         {
             var outputs = new List<ISignalSink>();
             for (int i = 0; i < device.Channels; i++)
             {
-                var output = new SignalSink(i);
+                var output = new SignalSink(owner, i);
                 output.ReceivedData += output_ReceivedData;
                 output.Name = string.Format("{0} Output {1}", device.Name, i);
                 

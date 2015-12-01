@@ -16,7 +16,7 @@ namespace ndaw.Core.Soundcard.Asio
 
         private float[][] floatBuffer;
         
-        public void Initialise(WaveFormat format, AsioOut driver)
+        public void Initialise(ISignalNode owner, WaveFormat format, AsioOut driver)
         {
             if (driver == null)
             {
@@ -33,10 +33,10 @@ namespace ndaw.Core.Soundcard.Asio
             Format = WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, driver.DriverInputChannelCount);
             formatPerLine = WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, 1);
 
-            mapInputs(driver);
+            mapInputs(owner, driver);
         }
 
-        private void mapInputs(AsioOut driver)
+        private void mapInputs(ISignalNode owner, AsioOut driver)
         {
             var inputCount = driver.DriverInputChannelCount;
 
@@ -45,7 +45,7 @@ namespace ndaw.Core.Soundcard.Asio
             
             for (int i = 0; i < inputCount; i++)
             {
-                var source = new SignalSource();
+                var source = new SignalSource(owner);
                 source.Name = driver.AsioInputChannelName(i);
                 inputs.Add(source);
             }

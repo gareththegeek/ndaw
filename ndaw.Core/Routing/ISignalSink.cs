@@ -5,6 +5,8 @@ namespace ndaw.Core.Routing
 {
     public interface ISignalSink: INamed
     {
+        ISignalNode Owner { get; }
+
         event EventHandler<RoutingEventArgs> ReceivedData;
 
         void ReceiveDataFromSource(RoutingEventArgs e);

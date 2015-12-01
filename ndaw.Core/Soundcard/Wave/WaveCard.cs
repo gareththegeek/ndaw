@@ -63,8 +63,8 @@ namespace ndaw.Core.Soundcard.Wave
         {
             Name = WaveOut.GetCapabilities(outDriver.DeviceNumber).ProductName;
 
-            inputMapper.Initialise(format, inDriver);
-            outputMapper.Initialise(format, outDriver);
+            inputMapper.Initialise(this, format, inDriver);
+            outputMapper.Initialise(this, format, outDriver);
 
             initialised = true;
         }

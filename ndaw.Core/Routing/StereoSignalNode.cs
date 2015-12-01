@@ -44,14 +44,14 @@ namespace ndaw.Core.Routing
 
             Name = string.Format("{0} (Stereo)", SignalProcess.Name);
 
-            LeftIn = new SignalSink();
-            RightIn = new SignalSink();
+            LeftIn = new SignalSink(this);
+            RightIn = new SignalSink(this);
 
             LeftIn.ReceivedData += LeftIn_ReceivedData;
             RightIn.ReceivedData += RightIn_ReceivedData;
 
-            LeftOut = new SignalSource();
-            RightOut = new SignalSource();
+            LeftOut = new SignalSource(this);
+            RightOut = new SignalSource(this);
         }
         
         private void LeftIn_ReceivedData(object sender, RoutingEventArgs e)

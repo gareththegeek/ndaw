@@ -5,6 +5,8 @@ namespace ndaw.Core.Routing
 {
     public interface ISignalSource: INamed
     {
+        ISignalNode Owner { get; }
+
         bool IsMapped { get; }
 
         /// <summary>

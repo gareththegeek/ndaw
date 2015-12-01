@@ -55,8 +55,8 @@ namespace ndaw.Core.Soundcard.Asio
         {
             Name = driver.DriverName;
 
-            inputMapper.Initialise(format, driver);
-            outputMapper.Initialise(format, driver);
+            inputMapper.Initialise(this, format, driver);
+            outputMapper.Initialise(this, format, driver);
 
             driver.InitRecordAndPlayback(
                 outputMapper.OutputBuffer, 

@@ -27,7 +27,7 @@ namespace ndaw.Core.Soundcard.Wave
         private WaveIn driver;
 
         //TODO wrap WaveIn to allow DI
-        public void Initialise(WaveFormat format, WaveIn driver)
+        public void Initialise(ISignalNode owner, WaveFormat format, WaveIn driver)
         {
             if (driver == null)
             {
@@ -57,16 +57,16 @@ namespace ndaw.Core.Soundcard.Wave
             Format = WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, device.Channels);
             formatPerLine = WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, 1);
 
-            mapInputs(device.Channels);
+            mapInputs(owner, device.Channels);
         }
         
-        private void mapInputs(int channelCount)
+        private void mapInputs(ISignalNode owner, int channelCount)
         {
             var inputs = new List<ISignalSource>();
 
             for (int i = 0; i < device.Channels; i++)
             {
-                var source = new SignalSource();
+                var source = new SignalSource(owner);
                 source.Name = string.Format("{0} Input {1}", device.Name, i);
                 inputs.Add(source);
             }

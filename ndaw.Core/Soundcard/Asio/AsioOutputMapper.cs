@@ -21,7 +21,7 @@ namespace ndaw.Core.Soundcard.Asio
         private byte[] rawBuffer;
         private float[][] receivedData;
 
-        public void Initialise(WaveFormat format, AsioOut driver)
+        public void Initialise(ISignalNode owner, WaveFormat format, AsioOut driver)
         {
             if (driver == null)
             {
@@ -37,10 +37,10 @@ namespace ndaw.Core.Soundcard.Asio
 
             OutputBuffer = new BufferedWaveProvider(Format);
 
-            mapOutputs(driver);
+            mapOutputs(owner, driver);
         }
 
-        private void mapOutputs(AsioOut driver)
+        private void mapOutputs(ISignalNode owner, AsioOut driver)
         {
             var channelCount = driver.DriverOutputChannelCount;
 
@@ -49,7 +49,7 @@ namespace ndaw.Core.Soundcard.Asio
             var outputs = new List<ISignalSink>();
             for (int i = 0; i < channelCount; i++)
             {
-                var output = new SignalSink(i);
+                var output = new SignalSink(owner, i);
                 output.ReceivedData += output_ReceivedData;
                 output.Name = driver.AsioOutputChannelName(i);
 
