@@ -3,11 +3,8 @@ using System.Collections.Generic;
 
 namespace ndaw.Core.Soundcard
 {
-    public interface ISoundcard
+    public interface ISoundcard: ISignalNode
     {
-        IEnumerable<ISignalSource> Inputs { get; }
-        IEnumerable<ISignalSink> Outputs { get; }
-
         void Start();
         void Stop();
     }

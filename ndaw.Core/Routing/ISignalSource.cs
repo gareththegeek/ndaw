@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ndaw.Core.Routing
 {
-    public interface ISignalSource
+    public interface ISignalSource: INamed
     {
         bool IsMapped { get; }
 

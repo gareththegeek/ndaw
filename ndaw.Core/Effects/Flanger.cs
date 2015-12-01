@@ -13,6 +13,8 @@ namespace ndaw.Core.Effects
 
         // Note that current sample is always overwritten instead of being aggregated in a normal delay unit
 
+        public string Name { get { return "Flanger"; } set { } }
+
         private class ChannelData
         {
             public int Position;

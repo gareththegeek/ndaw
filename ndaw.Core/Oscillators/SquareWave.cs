@@ -6,6 +6,8 @@ namespace ndaw.Core.Oscillators
 {
     public class SquareWave : IOscillator
     {
+        public string Name { get { return "Square Wave"; } set { } }
+
         private float halfFrequencyInSamples;
         private float frequency;
         public float Frequency

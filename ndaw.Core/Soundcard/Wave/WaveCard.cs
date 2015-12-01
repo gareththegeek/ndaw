@@ -7,8 +7,10 @@ namespace ndaw.Core.Soundcard.Wave
 {
     public class WaveCard: ISoundcard
     {
-        public IEnumerable<ISignalSource> Inputs { get { return inputMapper.Inputs; } }
-        public IEnumerable<ISignalSink> Outputs { get { return outputMapper.Outputs; } }
+        public string Name { get; set; }
+
+        public IEnumerable<ISignalSource> Sources { get { return inputMapper.Inputs; } }
+        public IEnumerable<ISignalSink> Sinks { get { return outputMapper.Outputs; } }
 
         private WaveOut outDriver;
         private WaveIn inDriver;
@@ -57,8 +59,10 @@ namespace ndaw.Core.Soundcard.Wave
             this.outputMapper = outputMapper;
         }
 
-        private void initialse()
+        private void initialise()
         {
+            Name = WaveOut.GetCapabilities(outDriver.DeviceNumber).ProductName;
+
             inputMapper.Initialise(format, inDriver);
             outputMapper.Initialise(format, outDriver);
 
@@ -69,7 +73,7 @@ namespace ndaw.Core.Soundcard.Wave
         {
             if (!initialised)
             {
-                initialse();
+                initialise();
             }
 
             outDriver.Play();

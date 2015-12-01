@@ -136,12 +136,12 @@ namespace ndaw
             flanger = new Flanger();
             flangerNode = new MonoSignalNode(monoFormat, flanger);
 
-            flangerNode.CentreIn.Source = asioCard.Inputs.First();
+            flangerNode.CentreIn.Source = asioCard.Sources.First();
             //flangerNode.CentreIn.Source = waveCard.Inputs.First();
             filterNode.CentreIn.Source = flangerNode.CentreOut;
             fourierNode.CentreIn.Source = filterNode.CentreOut;
-            asioCard.Outputs.ElementAt(0).Source = filterNode.CentreOut;
-            asioCard.Outputs.ElementAt(1).Source = filterNode.CentreOut;
+            asioCard.Sinks.ElementAt(0).Source = filterNode.CentreOut;
+            asioCard.Sinks.ElementAt(1).Source = filterNode.CentreOut;
             //waveCard.Outputs.ElementAt(0).Source = filterNode.CentreOut;
             //waveCard.Outputs.ElementAt(1).Source = filterNode.CentreOut;
         }
@@ -151,8 +151,8 @@ namespace ndaw
             sineWave = new SineWave();
             sineWaveNode = new StereoSignalNode(stereoFormat, sineWave);
 
-            sineWaveNode.LeftIn.Source = asioCard.Inputs.ElementAt(0);
-            sineWaveNode.RightIn.Source = asioCard.Inputs.ElementAt(0);
+            sineWaveNode.LeftIn.Source = asioCard.Sources.ElementAt(0);
+            sineWaveNode.RightIn.Source = asioCard.Sources.ElementAt(0);
 
             filter = new ComplexFilter(
                 stereoFormat,
@@ -177,8 +177,8 @@ namespace ndaw
 
             fourierNode.CentreIn.Source = stereoFilterNode.LeftOut;
 
-            asioCard.Outputs.ElementAt(0).Source = stereoFilterNode.LeftOut;
-            asioCard.Outputs.ElementAt(1).Source = stereoFilterNode.RightOut;
+            asioCard.Sinks.ElementAt(0).Source = stereoFilterNode.LeftOut;
+            asioCard.Sinks.ElementAt(1).Source = stereoFilterNode.RightOut;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)

@@ -4,13 +4,18 @@ using System.Collections.Generic;
 
 namespace ndaw.Core.Routing
 {
-    public class MonoSignalNode: ISignalNode
+    public class MonoSignalNode: ISignalProcessNode
     {
+        public string Name { get; set; }
+
         public bool Bypass { get; set; }
         public ISignalProcess SignalProcess { get; private set; }
 
         public ISignalSink CentreIn { get; private set; }
         public ISignalSource CentreOut { get; private set; }
+
+        IEnumerable<ISignalSource> ISignalNode.Sources { get { return new[] { CentreOut }; } }
+        IEnumerable<ISignalSink> ISignalNode.Sinks { get { return new[] { CentreIn }; } }
 
         private WaveFormat format;
 
@@ -49,6 +54,8 @@ namespace ndaw.Core.Routing
 
             SignalProcess = process;
             SignalProcess.Format = this.format;
+
+            Name = string.Format("{0} (Mono)", SignalProcess.Name);
 
             CentreIn = new SignalSink();
             CentreIn.ReceivedData += input_ReceivedData;

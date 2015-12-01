@@ -66,7 +66,8 @@ namespace ndaw.Core.Soundcard.Wave
             {
                 var output = new SignalSink(i);
                 output.ReceivedData += output_ReceivedData;
-
+                output.Name = string.Format("{0} Output {1}", device.Name, i);
+                
                 device.Buffers[i] = null;
 
                 outputs.Add(output);

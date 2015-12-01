@@ -13,6 +13,8 @@ namespace ndaw.Core.Filters.Implementations
         // TODO implement coefficient calculator
         // Kaiser
 
+        public string Name { get { return "FIR Filter"; } set { } }
+
         private class ChannelData
         {
             public int Position;

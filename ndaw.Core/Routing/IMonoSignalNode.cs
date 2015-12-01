@@ -1,7 +1,7 @@
 ﻿
 namespace ndaw.Core.Routing
 {
-    public interface IMonoSignalNode: ISignalNode
+    public interface IMonoSignalNode: ISignalProcessNode
     {
         ISignalSink CentreIn { get; }
         ISignalSource CentreOut { get; }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ndaw.Core.Routing
 {
-    public interface ISignalSink
+    public interface ISignalSink: INamed
     {
         event EventHandler<RoutingEventArgs> ReceivedData;
 

@@ -45,7 +45,9 @@ namespace ndaw.Core.Soundcard.Asio
             
             for (int i = 0; i < inputCount; i++)
             {
-                inputs.Add(new SignalSource());
+                var source = new SignalSource();
+                source.Name = driver.AsioInputChannelName(i);
+                inputs.Add(source);
             }
             this.Inputs = inputs;
         }

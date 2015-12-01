@@ -8,6 +8,8 @@ namespace ndaw.Core.Fourier
 {
     public class FourierTransform : ISignalProcess
     {
+        public string Name { get { return "Fourier Transform"; } set { } }
+
         private class ChannelData
         {
             public int Index;

@@ -6,6 +6,8 @@ namespace ndaw.Core.Routing
 {
     public class SignalSink: ISignalSink
     {
+        public string Name { get; set; }
+
         private int index;
 
         public SignalSink() { }

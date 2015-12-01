@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ndaw.Core.Routing
 {
-    public interface ISignalNode : INamed
+    public interface INamed
     {
-        IEnumerable<ISignalSource> Sources { get; }
-        IEnumerable<ISignalSink> Sinks { get; }
+        string Name { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 namespace ndaw.Core.Routing
 {
-    public interface IStereoSignalNode: ISignalNode
+    public interface IStereoSignalNode: ISignalProcessNode
     {
         ISignalSink LeftIn { get; }
         ISignalSink RightIn { get; }

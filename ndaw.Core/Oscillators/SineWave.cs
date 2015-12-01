@@ -6,6 +6,8 @@ namespace ndaw.Core.Oscillators
 {
     public class SineWave : IOscillator
     {
+        public string Name { get { return "Sine Wave"; } set { } }
+
         private float frequencyInSamples;
         private float frequency;
         public float Frequency

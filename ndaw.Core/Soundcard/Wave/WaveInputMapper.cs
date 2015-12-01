@@ -66,7 +66,9 @@ namespace ndaw.Core.Soundcard.Wave
 
             for (int i = 0; i < device.Channels; i++)
             {
-                inputs.Add(new SignalSource());
+                var source = new SignalSource();
+                source.Name = string.Format("{0} Input {1}", device.Name, i);
+                inputs.Add(source);
             }
 
             this.Inputs = inputs;

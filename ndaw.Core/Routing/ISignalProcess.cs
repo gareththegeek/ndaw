@@ -2,7 +2,7 @@
 
 namespace ndaw.Core.Routing
 {
-    public interface ISignalProcess
+    public interface ISignalProcess: INamed
     {
         WaveFormat Format { get; set; }
 

@@ -7,8 +7,10 @@ namespace ndaw.Core.Soundcard.Asio
 {
     public class AsioCard : ISoundcard
     {
-        public IEnumerable<ISignalSource> Inputs { get { return inputMapper.Inputs; } }
-        public IEnumerable<ISignalSink> Outputs { get { return outputMapper.Outputs; } }
+        public string Name { get; set; }
+
+        public IEnumerable<ISignalSource> Sources { get { return inputMapper.Inputs; } }
+        public IEnumerable<ISignalSink> Sinks { get { return outputMapper.Outputs; } }
 
         private AsioOut driver;
         private AsioInputMapper inputMapper;
@@ -51,6 +53,8 @@ namespace ndaw.Core.Soundcard.Asio
 
         private void initialise()
         {
+            Name = driver.DriverName;
+
             inputMapper.Initialise(format, driver);
             outputMapper.Initialise(format, driver);
 

@@ -51,6 +51,7 @@ namespace ndaw.Core.Soundcard.Asio
             {
                 var output = new SignalSink(i);
                 output.ReceivedData += output_ReceivedData;
+                output.Name = driver.AsioOutputChannelName(i);
 
                 receivedData[i] = null;
 

@@ -7,6 +7,8 @@ namespace ndaw.Core.Routing
 {
     public class SignalSource : ISignalSource
     {
+        public string Name { get; set; }
+
         private List<ISignalSink> sinks = new List<ISignalSink>();
         private float[][] sinkBuffers;
 

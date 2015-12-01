@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 namespace ndaw.Core.Routing
 {
-    public class StereoSignalNode: ISignalNode
+    public class StereoSignalNode: ISignalProcessNode
     {
+        public string Name { get; set; }
+
         public bool Bypass { get; set; }
         public ISignalProcess SignalProcess { get; private set; }
 
@@ -14,6 +16,9 @@ namespace ndaw.Core.Routing
 
         public ISignalSource LeftOut { get; private set; }
         public ISignalSource RightOut { get; private set; }
+
+        IEnumerable<ISignalSource> ISignalNode.Sources { get { return new[] { LeftOut, RightOut }; } }
+        IEnumerable<ISignalSink> ISignalNode.Sinks { get { return new[] { LeftIn, RightIn }; } }
 
         private float[] leftData;
         private float[] rightData;
@@ -36,6 +41,8 @@ namespace ndaw.Core.Routing
 
             SignalProcess = process;
             SignalProcess.Format = this.format;
+
+            Name = string.Format("{0} (Stereo)", SignalProcess.Name);
 
             LeftIn = new SignalSink();
             RightIn = new SignalSink();
