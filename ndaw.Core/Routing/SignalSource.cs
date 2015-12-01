@@ -11,6 +11,8 @@ namespace ndaw.Core.Routing
 
         public ISignalNode Owner { get; private set; }
 
+        public IEnumerable<ISignalSink> Sinks { get { return sinks.ToArray(); } }
+
         private List<ISignalSink> sinks = new List<ISignalSink>();
         private float[][] sinkBuffers;
 

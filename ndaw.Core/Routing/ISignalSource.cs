@@ -10,6 +10,12 @@ namespace ndaw.Core.Routing
         bool IsMapped { get; }
 
         /// <summary>
+        /// Do not modify this collection directly, instead set the Source 
+        /// property of the corresponding ISignalSink
+        /// </summary>
+        IEnumerable<ISignalSink> Sinks { get; }
+
+        /// <summary>
         /// Do not call this directly, instead set the Source property of the 
         /// corresponding ISignalSink
         /// </summary>
