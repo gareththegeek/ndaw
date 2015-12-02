@@ -6,6 +6,7 @@ namespace ndaw.Graphics.Devices
     public interface IRenderContext: IDisposable
     {
         RenderTarget RenderTarget { get; }
+        void UpdateViewport();
 
         void Activate();
         void Present();

@@ -118,9 +118,9 @@
             // 
             // fourierControl
             // 
-            this.fourierControl.Location = new System.Drawing.Point(182, 196);
+            this.fourierControl.Location = new System.Drawing.Point(172, 202);
             this.fourierControl.Name = "fourierControl";
-            this.fourierControl.Size = new System.Drawing.Size(506, 298);
+            this.fourierControl.Size = new System.Drawing.Size(535, 277);
             this.fourierControl.TabIndex = 8;
             // 
             // Form1

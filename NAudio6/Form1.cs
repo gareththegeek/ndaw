@@ -10,6 +10,7 @@ using ndaw.Core.Routing;
 using ndaw.Core.Soundcard.Asio;
 using ndaw.Core.Soundcard.Wave;
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -44,6 +45,8 @@ namespace ndaw
 
         private SineWave sineWave;
         private StereoSignalNode sineWaveNode;
+
+        private SignalNetworkForm signalNetworkForm;
         
         public Form1()
         {
@@ -53,6 +56,9 @@ namespace ndaw
         private void Form1_Load(object sender, EventArgs e)
         {
             cmbDevice.Items.AddRange(AsioOut.GetDriverNames());
+
+            signalNetworkForm = new SignalNetworkForm();
+            signalNetworkForm.Show();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -97,6 +103,9 @@ namespace ndaw
                 //waveCard.Start();
 
                 BuildAudioInChain(monoFormat);
+
+                signalNetworkForm.SignalNetworkControl.Nodes = new ObservableCollection<ISignalNode>();
+                signalNetworkForm.SignalNetworkControl.Nodes.Add(flangerNode);
 
                 //BuildSineWaveChain(stereoFormat);
 

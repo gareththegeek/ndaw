@@ -1,6 +1,6 @@
 ﻿namespace ndaw.Graphics.Controls
 {
-    partial class DXControlBase
+    partial class SignalNetworkControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,14 +30,13 @@
         {
             this.SuspendLayout();
             // 
-            // DirectXControl
+            // SignalNetworkControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "DirectXControl";
-            this.Resize += DXControlBase_Resize;
-            this.Load += DXControlBase_Load;
-            this.Size = new System.Drawing.Size(600, 376);
+            this.Name = "SignalNetworkControl";
+            this.Size = new System.Drawing.Size(592, 412);
+            this.Load += new System.EventHandler(this.SignalNetworkControl_Load);
             this.ResumeLayout(false);
 
         }

@@ -1,6 +1,7 @@
 ﻿using D3D11 = SharpDX.Direct3D11;
 using System;
 using D3D = SharpDX.Direct3D;
+using D2D = SharpDX.Direct2D1;
 using System.Windows.Forms;
 
 namespace ndaw.Graphics.Devices
@@ -10,6 +11,8 @@ namespace ndaw.Graphics.Devices
         private bool disposed;
 
         public D3D11.DeviceContext DeviceContext { get; private set; }
+
+        public D2D.Factory Factory { get; private set; }
 
         private static DeviceManager instance;
         public static DeviceManager Instance
@@ -31,6 +34,7 @@ namespace ndaw.Graphics.Devices
                 /*DeviceCreationFlags.Debug |*/ D3D11.DeviceCreationFlags.BgraSupport);
 
             DeviceContext = device.ImmediateContext;
+            Factory = new D2D.Factory();
         }
 
         ~DeviceManager()

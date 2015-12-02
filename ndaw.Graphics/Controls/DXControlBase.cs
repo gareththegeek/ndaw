@@ -8,7 +8,7 @@ namespace ndaw.Graphics.Controls
     public partial class DXControlBase : UserControl
     {
         protected object renderLock = new object();
-        protected RenderContext context;
+        protected IRenderContext context;
 
         public DXControlBase()
         {
@@ -26,6 +26,20 @@ namespace ndaw.Graphics.Controls
 
             this.Disposed += DXControlBase_Disposed;
             context = new RenderContext(DeviceManager.Instance, this);
+        }
+
+        private void DXControlBase_Resize(object sender, System.EventArgs e)
+        {
+            if (DesignMode) return;
+            if (context == null) return;
+
+            context.UpdateViewport();
+            DXPaint();
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            DXPaint();
         }
 
         protected virtual void DXPaint()
