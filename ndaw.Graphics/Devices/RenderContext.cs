@@ -10,6 +10,8 @@ namespace ndaw.Graphics.Devices
 {
     public class RenderContext: IRenderContext
     {
+        public object DeviceLock { get { return deviceManager.DeviceLock; } }
+
         private Control control;
 
         private IDeviceManager deviceManager;
@@ -29,13 +31,19 @@ namespace ndaw.Graphics.Devices
 
         public void Activate()
         {
-            deviceContext.OutputMerger.SetTargets(backbufferView);
-            deviceContext.Rasterizer.SetViewport(viewport);
+            lock (deviceManager.DeviceLock)
+            {
+                deviceContext.OutputMerger.SetTargets(backbufferView);
+                deviceContext.Rasterizer.SetViewport(viewport);
+            }
         }
 
         public void Present()
         {
-            swapChain.Present(0, DXGI.PresentFlags.None);
+            lock (deviceManager.DeviceLock)
+            {
+                swapChain.Present(0, DXGI.PresentFlags.None);
+            }
         }
 
         public RenderContext(IDeviceManager deviceManager, Control control)
@@ -59,28 +67,31 @@ namespace ndaw.Graphics.Devices
 
         private void createSwapChain()
         {
-            var factory = new DXGI.Factory();
-
-            var description = new DXGI.SwapChainDescription()
+            lock (deviceManager.DeviceLock)
             {
-                BufferCount = 1,
-                ModeDescription =
-                    new DXGI.ModeDescription(
-                        control.ClientSize.Width,
-                        control.ClientSize.Height,
-                        new DXGI.Rational(60, 1),
-                        DXGI.Format.R8G8B8A8_UNorm),
-                IsWindowed = true,
-                SampleDescription = new DXGI.SampleDescription(1, 0),
-                SwapEffect = DXGI.SwapEffect.Discard,
-                Usage = DXGI.Usage.RenderTargetOutput,
-                OutputHandle = control.Handle
-            };
+                var factory = new DXGI.Factory();
 
-            swapChain = new DXGI.SwapChain(factory, deviceContext.Device, description);
+                var description = new DXGI.SwapChainDescription()
+                {
+                    BufferCount = 1,
+                    ModeDescription =
+                        new DXGI.ModeDescription(
+                            control.ClientSize.Width,
+                            control.ClientSize.Height,
+                            new DXGI.Rational(60, 1),
+                            DXGI.Format.R8G8B8A8_UNorm),
+                    IsWindowed = true,
+                    SampleDescription = new DXGI.SampleDescription(1, 0),
+                    SwapEffect = DXGI.SwapEffect.Discard,
+                    Usage = DXGI.Usage.RenderTargetOutput,
+                    OutputHandle = control.Handle
+                };
 
-            backbuffer = D3D11.Texture2D.FromSwapChain<D3D11.Texture2D>(swapChain, 0);
-            backbufferView = new D3D11.RenderTargetView(deviceContext.Device, backbuffer);
+                swapChain = new DXGI.SwapChain(factory, deviceContext.Device, description);
+
+                backbuffer = D3D11.Texture2D.FromSwapChain<D3D11.Texture2D>(swapChain, 0);
+                backbufferView = new D3D11.RenderTargetView(deviceContext.Device, backbuffer);
+            }
 
             var d2dFactory = deviceManager.Factory;
             var surface = backbuffer.QueryInterface<DXGI.Surface>();

@@ -10,6 +10,9 @@ namespace ndaw.Graphics.Devices
     {
         private bool disposed;
 
+        private object deviceLock = new object();
+        public object DeviceLock { get { return deviceLock; } }
+
         public D3D11.DeviceContext DeviceContext { get; private set; }
 
         public D2D.Factory Factory { get; private set; }

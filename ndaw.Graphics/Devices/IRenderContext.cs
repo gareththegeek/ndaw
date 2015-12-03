@@ -5,6 +5,8 @@ namespace ndaw.Graphics.Devices
 {
     public interface IRenderContext: IDisposable
     {
+        object DeviceLock { get; }
+
         RenderTarget RenderTarget { get; }
         void UpdateViewport();
 

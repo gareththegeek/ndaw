@@ -7,6 +7,7 @@ namespace ndaw.Graphics.Devices
 {
     public interface IDeviceManager: IDisposable
     {
+        object DeviceLock { get; }
         D3D11.DeviceContext DeviceContext { get; }
         D2D.Factory Factory { get; }
     }

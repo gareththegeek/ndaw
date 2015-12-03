@@ -7,7 +7,6 @@ namespace ndaw.Graphics.Controls
 {
     public partial class DXControlBase : UserControl
     {
-        protected object renderLock = new object();
         protected IRenderContext context;
 
         public DXControlBase()
@@ -34,28 +33,42 @@ namespace ndaw.Graphics.Controls
             if (context == null) return;
 
             context.UpdateViewport();
-            DXPaint();
+            Refresh();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            DXPaint();
+            Refresh();
         }
 
-        protected virtual void DXPaint()
+        public virtual void Refresh()
         {
             if (DesignMode) return;
 
-            context.Activate();
+            lock (context.DeviceLock)
+            {
+                context.Activate();
+
+                paint();
+                
+                context.Present();
+            }
+        }
+
+        protected virtual void paint()
+        {
+            context.RenderTarget.BeginDraw();
+
             context.RenderTarget.Clear(Color4.Black);
-            context.Present();
+
+            context.RenderTarget.EndDraw();
         }
 
         private void DXControlBase_Disposed(object sender, EventArgs e)
         {
             if (context != null)
             {
-                lock (renderLock)
+                lock (context.DeviceLock)
                 {
                     context.Dispose();
                     context = null;

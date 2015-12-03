@@ -55,7 +55,7 @@ namespace ndaw.Graphics.Controls
             solidBrush = new SolidColorBrush(context.RenderTarget, Color.White);
         }
 
-        protected override void DXPaint()
+        protected override void paint()
         {
             if (DesignMode) return;
 
@@ -77,81 +77,72 @@ namespace ndaw.Graphics.Controls
                 }
             }
 
-            lock (renderLock)
+            context.RenderTarget.BeginDraw();
+            context.RenderTarget.Clear(Color.Black);
+            solidBrush.Color = new Color4(1, 1, 1, 1);
+
+            if (real != null && imaginary != null)
             {
-                if (abortRendering) return;
-
-                context.Activate();
-
-                context.RenderTarget.BeginDraw();
-                context.RenderTarget.Clear(Color.Black);
-                solidBrush.Color = new Color4(1, 1, 1, 1);
-
-                if (real != null && imaginary != null)
+                if (real.Length != imaginary.Length)
                 {
-                    if (real.Length != imaginary.Length)
-                    {
-                        throw new NotSupportedException("Real and imaginary fourier results must be the same length");
-                    }
-
-                    var max = float.MinValue;
-                    var min = float.MaxValue;
-                    var maxI = -1;
-                    var minI = -1;
-
-                    for (var i = 0; i < real.Length; i++)
-                    {
-                        var x = real[i];
-                        var y = imaginary[i];
-                        var mag = x * x + y * y;
-
-                        if (mag != 0f)
-                        {
-                            mag = (float)Math.Log10(mag);
-
-                            if (mag > max)
-                            {
-                                max = mag;
-                                maxI = i;
-                            }
-                            if (mag < min)
-                            {
-                                min = mag;
-                                minI = i;
-                            }
-
-                            var height = ClientSize.Height;
-
-                            //var scaled = (int)(mag * ClientSize.Height);
-                            history = BufferHelpers.Ensure(history, fourierLength * sizeof(float));
-
-                            history[i] = smoothing * history[i] + ((1 - smoothing) * mag);
-                            var scaled = (int)(((history[i] - minimumFourierValue) / (fourierScale)) * height);
-
-                            //var scaled = mag * panel1.Height;
-                            //g.DrawLine(pen, i, panel1.Height, i, panel1.Height - scaled);
-
-                            context.RenderTarget.DrawLine(
-                                new Vector2 { X = i, Y = height },
-                                new Vector2 { X = i, Y = height - scaled },
-                                solidBrush);
-                        }
-                    }
-
-                    //TODO remove magic number for SampleRate
-                    var sampleRateOverN = 44100f/*SampleRate*/ / real.Length;
-                    var maxF = maxI * sampleRateOverN;
-                    var minF = minI * sampleRateOverN;
-
-                    if (max > maximumFourierValue) maximumFourierValue = max;
-                    if (min < minimumFourierValue) minimumFourierValue = min;
-                    fourierScale = maximumFourierValue - minimumFourierValue;
+                    throw new NotSupportedException("Real and imaginary fourier results must be the same length");
                 }
 
-                context.RenderTarget.EndDraw();
+                var max = float.MinValue;
+                var min = float.MaxValue;
+                var maxI = -1;
+                var minI = -1;
 
-                context.Present();
+                for (var i = 0; i < real.Length; i++)
+                {
+                    var x = real[i];
+                    var y = imaginary[i];
+                    var mag = x * x + y * y;
+
+                    if (mag != 0f)
+                    {
+                        mag = (float)Math.Log10(mag);
+
+                        if (mag > max)
+                        {
+                            max = mag;
+                            maxI = i;
+                        }
+                        if (mag < min)
+                        {
+                            min = mag;
+                            minI = i;
+                        }
+
+                        var height = ClientSize.Height;
+
+                        //var scaled = (int)(mag * ClientSize.Height);
+                        history = BufferHelpers.Ensure(history, fourierLength * sizeof(float));
+
+                        history[i] = smoothing * history[i] + ((1 - smoothing) * mag);
+                        var scaled = (int)(((history[i] - minimumFourierValue) / (fourierScale)) * height);
+
+                        //var scaled = mag * panel1.Height;
+                        //g.DrawLine(pen, i, panel1.Height, i, panel1.Height - scaled);
+
+                        context.RenderTarget.DrawLine(
+                            new Vector2 { X = i, Y = height },
+                            new Vector2 { X = i, Y = height - scaled },
+                            solidBrush);
+                    }
+                }
+
+                //TODO remove magic number for SampleRate
+                var sampleRateOverN = 44100f/*SampleRate*/ / real.Length;
+                var maxF = maxI * sampleRateOverN;
+                var minF = minI * sampleRateOverN;
+
+                if (max > maximumFourierValue) maximumFourierValue = max;
+                if (min < minimumFourierValue) minimumFourierValue = min;
+                fourierScale = maximumFourierValue - minimumFourierValue;
             }
+
+            context.RenderTarget.EndDraw();
         }
     }
 }

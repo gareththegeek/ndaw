@@ -27,9 +27,16 @@ namespace ndaw.Graphics.Controls
                         }
 
                         Thread.Sleep(1000 / 120);
-                        DXPaint();
+                        Refresh();
                     }
                 }).Start();
+        }
+
+        public override void Refresh()
+        {
+            if (abortRendering) return;
+
+            base.Refresh();
         }
 
         private void DXControlBase_Disposed(object sender, EventArgs e)

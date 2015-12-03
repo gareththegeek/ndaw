@@ -63,7 +63,7 @@ namespace ndaw.Graphics.Controls
         {
             updateModels();
 
-            DXPaint();
+            Refresh();
         }
         
         private void updateModels()
@@ -88,20 +88,16 @@ namespace ndaw.Graphics.Controls
             }
         }
 
-        protected override void DXPaint()
+        protected override void paint()
         {
-            if (DesignMode) return;
-
             if (nodes == null) return;
 
-            context.Activate();
             context.RenderTarget.BeginDraw();
             context.RenderTarget.Clear(Color4.White);
 
             renderModels();
 
             context.RenderTarget.EndDraw();
-            context.Present();
         }
 
         private void renderModels()
