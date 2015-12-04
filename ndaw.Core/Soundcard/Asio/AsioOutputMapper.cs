@@ -8,20 +8,23 @@ using System.Runtime.InteropServices;
 
 namespace ndaw.Core.Soundcard.Asio
 {
-    public class AsioOutputMapper
+    public class AsioOutputMapper: ISignalNode
     {
         // TODO There is an overlap in logic between this and the WaveOutputMapper
+
+        public string Name { get; set; }
 
         public BufferedWaveProvider OutputBuffer { get; private set; }
 
         public WaveFormat Format { get; private set; }
 
-        public IEnumerable<ISignalSink> Outputs { get; private set; }
+        public IEnumerable<ISignalSource> Sources { get { return new ISignalSource[] { }; } }
+        public IEnumerable<ISignalSink> Sinks { get; private set; }
 
         private byte[] rawBuffer;
         private float[][] receivedData;
 
-        public void Initialise(ISignalNode owner, WaveFormat format, AsioOut driver)
+        public void Initialise(WaveFormat format, AsioOut driver)
         {
             if (driver == null)
             {
@@ -37,10 +40,10 @@ namespace ndaw.Core.Soundcard.Asio
 
             OutputBuffer = new BufferedWaveProvider(Format);
 
-            mapOutputs(owner, driver);
+            mapOutputs(driver);
         }
 
-        private void mapOutputs(ISignalNode owner, AsioOut driver)
+        private void mapOutputs(AsioOut driver)
         {
             var channelCount = driver.DriverOutputChannelCount;
 
@@ -49,7 +52,7 @@ namespace ndaw.Core.Soundcard.Asio
             var outputs = new List<ISignalSink>();
             for (int i = 0; i < channelCount; i++)
             {
-                var output = new SignalSink(owner, i);
+                var output = new SignalSink(this, i);
                 output.ReceivedData += output_ReceivedData;
                 output.Name = driver.AsioOutputChannelName(i);
 
@@ -57,7 +60,7 @@ namespace ndaw.Core.Soundcard.Asio
 
                 outputs.Add(output);
             }
-            Outputs = outputs;
+            Sinks = outputs;
         }
 
         private void output_ReceivedData(object sender, RoutingEventArgs e)
@@ -79,7 +82,7 @@ namespace ndaw.Core.Soundcard.Asio
         {
             for (int i = 0; i < receivedData.Length; i++)
             {
-                if (receivedData[i] == null && Outputs.ElementAt(i).IsMapped)
+                if (receivedData[i] == null && Sinks.ElementAt(i).IsMapped)
                 {
                     return false;
                 }

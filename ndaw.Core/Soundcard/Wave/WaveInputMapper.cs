@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace ndaw.Core.Soundcard.Wave
 {
-    public class WaveInputMapper
+    public class WaveInputMapper: ISignalNode
     {
         private class WaveInDeviceData
         {
@@ -18,7 +18,10 @@ namespace ndaw.Core.Soundcard.Wave
             public float[][] Buffers;
         }
 
-        public IEnumerable<ISignalSource> Inputs { get; private set; }
+        public string Name { get; set; }
+
+        public IEnumerable<ISignalSource> Sources { get; private set; }
+        public IEnumerable<ISignalSink> Sinks { get { return new ISignalSink[] { }; } }
 
         public WaveFormat Format { get; private set; }
         private WaveFormat formatPerLine;
@@ -27,7 +30,7 @@ namespace ndaw.Core.Soundcard.Wave
         private WaveIn driver;
 
         //TODO wrap WaveIn to allow DI
-        public void Initialise(ISignalNode owner, WaveFormat format, WaveIn driver)
+        public void Initialise(WaveFormat format, WaveIn driver)
         {
             if (driver == null)
             {
@@ -57,21 +60,21 @@ namespace ndaw.Core.Soundcard.Wave
             Format = WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, device.Channels);
             formatPerLine = WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, 1);
 
-            mapInputs(owner, device.Channels);
+            mapInputs(device.Channels);
         }
         
-        private void mapInputs(ISignalNode owner, int channelCount)
+        private void mapInputs(int channelCount)
         {
             var inputs = new List<ISignalSource>();
 
             for (int i = 0; i < device.Channels; i++)
             {
-                var source = new SignalSource(owner);
+                var source = new SignalSource(this);
                 source.Name = string.Format("{0} Input {1}", device.Name, i);
                 inputs.Add(source);
             }
 
-            this.Inputs = inputs;
+            this.Sources = inputs;
         }
 
         void device_DataAvailable(object sender, WaveInEventArgs e)
@@ -96,7 +99,7 @@ namespace ndaw.Core.Soundcard.Wave
 
             for (int i = 0; i < device.Channels; i++)
             {
-                var input = Inputs.ElementAt(i);
+                var input = Sources.ElementAt(i);
 
                 if (input.IsMapped)
                 {

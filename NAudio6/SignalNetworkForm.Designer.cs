@@ -52,6 +52,7 @@
             this.verticalScrollBar.Name = "verticalScrollBar";
             this.verticalScrollBar.Size = new System.Drawing.Size(17, 388);
             this.verticalScrollBar.TabIndex = 0;
+            this.verticalScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.verticalScrollBar_Scroll);
             // 
             // horizontalScrollBar
             // 
@@ -60,6 +61,7 @@
             this.horizontalScrollBar.Name = "horizontalScrollBar";
             this.horizontalScrollBar.Size = new System.Drawing.Size(670, 17);
             this.horizontalScrollBar.TabIndex = 2;
+            this.horizontalScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.horizontalScrollBar_Scroll);
             // 
             // SignalNetworkControl
             // 
@@ -69,6 +71,8 @@
             this.SignalNetworkControl.Nodes = null;
             this.SignalNetworkControl.Size = new System.Drawing.Size(670, 389);
             this.SignalNetworkControl.TabIndex = 3;
+            this.SignalNetworkControl.ViewX = 0;
+            this.SignalNetworkControl.ViewY = 0;
             // 
             // SignalNetworkForm
             // 

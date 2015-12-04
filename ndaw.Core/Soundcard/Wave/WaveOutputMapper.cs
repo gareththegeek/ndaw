@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace ndaw.Core.Soundcard.Wave
 {
-    public class WaveOutputMapper
+    public class WaveOutputMapper: ISignalNode
     {
         private class WaveOutDeviceData
         {
@@ -22,13 +22,16 @@ namespace ndaw.Core.Soundcard.Wave
 
         public WaveFormat Format { get; private set; }
 
-        public IEnumerable<ISignalSink> Outputs { get; private set; }
+        public string Name { get; set; }
+
+        public IEnumerable<ISignalSource> Sources { get { return new ISignalSource[] { }; } }
+        public IEnumerable<ISignalSink> Sinks { get; private set; }
 
         private WaveOutDeviceData device;
 
         private byte[] rawBuffer;
 
-        public void Initialise(ISignalNode owner, WaveFormat format, WaveOut driver)
+        public void Initialise(WaveFormat format, WaveOut driver)
         {
             if (driver == null)
             {
@@ -56,15 +59,15 @@ namespace ndaw.Core.Soundcard.Wave
 
             driver.Init(OutputBuffer);
 
-            mapOutputs(owner);
+            mapOutputs();
         }
 
-        private void mapOutputs(ISignalNode owner)
+        private void mapOutputs()
         {
             var outputs = new List<ISignalSink>();
             for (int i = 0; i < device.Channels; i++)
             {
-                var output = new SignalSink(owner, i);
+                var output = new SignalSink(this, i);
                 output.ReceivedData += output_ReceivedData;
                 output.Name = string.Format("{0} Output {1}", device.Name, i);
                 
@@ -72,7 +75,7 @@ namespace ndaw.Core.Soundcard.Wave
 
                 outputs.Add(output);
             }
-            Outputs = outputs;
+            Sinks = outputs;
         }
 
         private void output_ReceivedData(object sender, RoutingEventArgs e)
@@ -94,7 +97,7 @@ namespace ndaw.Core.Soundcard.Wave
         {
             for (int i = 0; i < device.Buffers.Length; i++)
             {
-                if (device.Buffers[i] == null && Outputs.ElementAt(i).IsMapped)
+                if (device.Buffers[i] == null && Sinks.ElementAt(i).IsMapped)
                 {
                     return false;
                 }

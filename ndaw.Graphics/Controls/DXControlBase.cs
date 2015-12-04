@@ -44,6 +44,7 @@ namespace ndaw.Graphics.Controls
         public virtual void Refresh()
         {
             if (DesignMode) return;
+            if (context == null) return;
 
             lock (context.DeviceLock)
             {

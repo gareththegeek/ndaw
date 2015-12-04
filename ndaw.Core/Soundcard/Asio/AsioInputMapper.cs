@@ -7,16 +7,19 @@ using System.Collections.Generic;
 
 namespace ndaw.Core.Soundcard.Asio
 {
-    public class AsioInputMapper
+    public class AsioInputMapper: ISignalNode
     {
-        public IEnumerable<ISignalSource> Inputs { get; private set; }
+        public string Name { get; set; }
+
+        public IEnumerable<ISignalSource> Sources { get; private set; }
+        public IEnumerable<ISignalSink> Sinks { get { return new ISignalSink[] { }; } }
 
         public WaveFormat Format { get; private set; }
         private WaveFormat formatPerLine;
 
         private float[][] floatBuffer;
         
-        public void Initialise(ISignalNode owner, WaveFormat format, AsioOut driver)
+        public void Initialise(WaveFormat format, AsioOut driver)
         {
             if (driver == null)
             {
@@ -33,10 +36,10 @@ namespace ndaw.Core.Soundcard.Asio
             Format = WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, driver.DriverInputChannelCount);
             formatPerLine = WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, 1);
 
-            mapInputs(owner, driver);
+            mapInputs(driver);
         }
 
-        private void mapInputs(ISignalNode owner, AsioOut driver)
+        private void mapInputs(AsioOut driver)
         {
             var inputCount = driver.DriverInputChannelCount;
 
@@ -45,18 +48,18 @@ namespace ndaw.Core.Soundcard.Asio
             
             for (int i = 0; i < inputCount; i++)
             {
-                var source = new SignalSource(owner);
+                var source = new SignalSource(this);
                 source.Name = driver.AsioInputChannelName(i);
                 inputs.Add(source);
             }
-            this.Inputs = inputs;
+            this.Sources = inputs;
         }
 
         private void asioDriver_AudioAvailable(object sender, AsioAudioAvailableEventArgs e)
         {
             var index = 0;
             
-            foreach (var input in Inputs)
+            foreach (var input in Sources)
             {
                 if (input.IsMapped)
                 {

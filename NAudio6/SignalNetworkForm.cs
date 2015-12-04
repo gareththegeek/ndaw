@@ -16,5 +16,15 @@ namespace ndaw
         {
             InitializeComponent();
         }
+
+        private void verticalScrollBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            SignalNetworkControl.ViewY = verticalScrollBar.Value;
+        }
+
+        private void horizontalScrollBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            SignalNetworkControl.ViewX = horizontalScrollBar.Value;
+        }
     }
 }

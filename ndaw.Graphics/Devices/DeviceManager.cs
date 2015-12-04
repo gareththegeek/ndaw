@@ -3,6 +3,7 @@ using System;
 using D3D = SharpDX.Direct3D;
 using D2D = SharpDX.Direct2D1;
 using System.Windows.Forms;
+using DW = SharpDX.DirectWrite;
 
 namespace ndaw.Graphics.Devices
 {
@@ -15,7 +16,8 @@ namespace ndaw.Graphics.Devices
 
         public D3D11.DeviceContext DeviceContext { get; private set; }
 
-        public D2D.Factory Factory { get; private set; }
+        public D2D.Factory Direct2dFactory { get; private set; }
+        public DW.Factory DirectWriteFactory { get; private set; }
 
         private static DeviceManager instance;
         public static DeviceManager Instance
@@ -37,7 +39,8 @@ namespace ndaw.Graphics.Devices
                 /*DeviceCreationFlags.Debug |*/ D3D11.DeviceCreationFlags.BgraSupport);
 
             DeviceContext = device.ImmediateContext;
-            Factory = new D2D.Factory();
+            Direct2dFactory = new D2D.Factory();
+            DirectWriteFactory = new DW.Factory();
         }
 
         ~DeviceManager()
@@ -55,6 +58,8 @@ namespace ndaw.Graphics.Devices
                 {
                     if (DeviceContext != null)
                     {
+                        Direct2dFactory.Dispose();
+                        DirectWriteFactory.Dispose();
                         DeviceContext.Device.Dispose();
                         DeviceContext = null;
                     }

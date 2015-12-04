@@ -5,12 +5,14 @@ using D3D11 = SharpDX.Direct3D11;
 using System.Windows.Forms;
 using SharpDX;
 using System.Drawing;
+using DW = SharpDX.DirectWrite;
 
 namespace ndaw.Graphics.Devices
 {
     public class RenderContext: IRenderContext
     {
         public object DeviceLock { get { return deviceManager.DeviceLock; } }
+        public DW.Factory FontFactory { get { return deviceManager.DirectWriteFactory; } }
 
         private Control control;
 
@@ -93,7 +95,7 @@ namespace ndaw.Graphics.Devices
                 backbufferView = new D3D11.RenderTargetView(deviceContext.Device, backbuffer);
             }
 
-            var d2dFactory = deviceManager.Factory;
+            var d2dFactory = deviceManager.Direct2dFactory;
             var surface = backbuffer.QueryInterface<DXGI.Surface>();
             renderTarget = new D2D.RenderTarget(
                 d2dFactory,

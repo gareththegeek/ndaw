@@ -57,8 +57,6 @@ namespace ndaw.Graphics.Controls
 
         protected override void paint()
         {
-            if (DesignMode) return;
-
             float[] real = null;
             float[] imaginary = null;
 

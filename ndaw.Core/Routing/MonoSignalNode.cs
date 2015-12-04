@@ -58,9 +58,11 @@ namespace ndaw.Core.Routing
             Name = string.Format("{0} (Mono)", SignalProcess.Name);
 
             CentreIn = new SignalSink(this);
+            CentreIn.Name = "In";
             CentreIn.ReceivedData += input_ReceivedData;
 
             CentreOut = new SignalSource(this);
+            CentreOut.Name = "Out";
         }
     }
 }

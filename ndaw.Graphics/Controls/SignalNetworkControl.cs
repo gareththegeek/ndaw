@@ -1,6 +1,8 @@
 ﻿using ndaw.Core.Routing;
+using System.Linq;
 using SharpDX;
 using SharpDX.Direct2D1;
+using SharpDX.DirectWrite;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,6 +12,29 @@ namespace ndaw.Graphics.Controls
 {
     public partial class SignalNetworkControl : DXControlBase
     {
+        private int viewX;
+        private int viewY;
+
+        public int ViewX
+        {
+            get { return viewX; }
+            set
+            {
+                viewX = value;
+                Refresh();
+            }
+        }
+
+        public int ViewY
+        {
+            get { return viewY; }
+            set
+            {
+                viewY = value;
+                Refresh();
+            }
+        }
+
         public SignalNetworkControl()
         {
             models = new Dictionary<ISignalNode, SignalNodeViewModel>();
@@ -23,6 +48,8 @@ namespace ndaw.Graphics.Controls
         private Dictionary<ISignalNode, SignalNodeViewModel> models;
 
         private SolidColorBrush boxBrush;
+        private TextFormat nodeFont;
+        private TextFormat portFont;
 
         public ObservableCollection<ISignalNode> Nodes
         {
@@ -48,6 +75,8 @@ namespace ndaw.Graphics.Controls
             if (DesignMode) return;
 
             boxBrush = new SolidColorBrush(context.RenderTarget, Color4.Black);
+            nodeFont = new TextFormat(context.FontFactory, "Consolas", 24f);
+            portFont = new TextFormat(context.FontFactory, "Consolas", 12f);
         }
 
         private void SignalNetworkControl_Disposed(object sender, EventArgs e)
@@ -68,6 +97,7 @@ namespace ndaw.Graphics.Controls
         
         private void updateModels()
         {
+            var i = 20;
             foreach (var node in nodes)
             {
                 SignalNodeViewModel model;
@@ -78,13 +108,12 @@ namespace ndaw.Graphics.Controls
                         Node = node,
                         //TODO find sensible place to dump nodes
                         //TODO generation of models should be delegated to another class
-                        X = 20,
-                        Y = 20,
-                        Width = 100,
-                        Height = 100
+                        X = i,
+                        Y = 20
                     };
                     models[node] = model;
                 }
+                i += 400;
             }
         }
 
@@ -102,22 +131,91 @@ namespace ndaw.Graphics.Controls
 
         private void renderModels()
         {
+            var worldTransform = Matrix3x2.Translation(-viewX, -viewY);
+
             foreach (var model in models.Values)
             {
-                renderModel(model);
+                renderModel(worldTransform, model);
             }
         }
 
-        private void renderModel(SignalNodeViewModel model)
+        private void renderModel(Matrix3x2 worldTransform, SignalNodeViewModel model)
         {
+            var modelTransform = Matrix3x2.Translation(model.X, model.Y) * worldTransform;
+            context.RenderTarget.Transform = modelTransform;
+
+            const int portSize = 32;
+            const int margin = 20;
+
+            var nodeTitle = new TextLayout(context.FontFactory, model.Node.Name, nodeFont, 10000f, 0f);
+
+            var nodeTitleWidth = (int)nodeTitle.Metrics.Width + margin;
+            var nodeTitleHeight = (int)nodeTitle.Metrics.Height + margin * 2;
+
+            var portCount = Math.Max(model.Node.Sources.Count(), model.Node.Sinks.Count());
+            var portColumnWidth = portSize + margin;
+            var portColumnHeight = portSize + margin;
+
+            var boxWidth = Math.Max(portColumnWidth * 2, nodeTitleWidth);
+            var boxHeight = nodeTitleHeight + portColumnHeight * portCount;
+
             context.RenderTarget.DrawRectangle(
                 new RectangleF
                 {
-                    Left = model.X,
-                    Top = model.Y,
-                    Height = model.Height,
-                    Width = model.Width
-                }, boxBrush, 1f);
+                    Left = 0,
+                    Top = 0,
+                    Height = boxHeight,
+                    Width = boxWidth
+                }, boxBrush);
+
+            var fontX = (boxWidth - (int)nodeTitle.Metrics.Width) / 2;
+            var fontY = (margin >> 1);
+            context.RenderTarget.DrawTextLayout(new Vector2(fontX, fontY), nodeTitle, boxBrush);
+
+            renderPorts(
+                model.Node.Sinks, 
+                modelTransform, 
+                margin,
+                nodeTitleHeight,
+                portSize,
+                portColumnHeight);
+
+            renderPorts(
+                model.Node.Sources, 
+                modelTransform, 
+                boxWidth - portSize - margin, 
+                nodeTitleHeight, 
+                portSize,
+                portColumnHeight);
+        }
+
+        private void renderPorts(
+            IEnumerable<INamed> ports,
+            Matrix3x2 modelTransform,
+            int x, 
+            int y,
+            int size, 
+            int stride)
+        {
+            var portTransform = Matrix3x2.Translation(x, y);
+
+            foreach (var port in ports)
+            {
+                context.RenderTarget.Transform = modelTransform * portTransform;
+
+                var sinkTitle = new TextLayout(context.FontFactory, port.Name, portFont, 10000f, 0f);
+                context.RenderTarget.DrawTextLayout(Vector2.Zero, sinkTitle, boxBrush);
+
+                context.RenderTarget.DrawRectangle(new RectangleF
+                {
+                    Left = 0,
+                    Top = 0,
+                    Width = size,
+                    Height = size
+                }, boxBrush);
+
+                portTransform *= Matrix3x2.Translation(0f, stride);
+            }
         }
     }
 }
