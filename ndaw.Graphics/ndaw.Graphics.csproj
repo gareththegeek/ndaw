@@ -70,6 +70,13 @@
     <Compile Include="Controls\FourierControl.Designer.cs">
       <DependentUpon>FourierControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\IScrollableArea.cs" />
+    <Compile Include="Controls\ScrollableAreaControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ScrollableAreaControl.Designer.cs">
+      <DependentUpon>ScrollableAreaControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SignalNetworkControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -98,6 +105,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\FourierControl.resx">
       <DependentUpon>FourierControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ScrollableAreaControl.resx">
+      <DependentUpon>ScrollableAreaControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SignalNetworkControl.resx">
       <DependentUpon>SignalNetworkControl.cs</DependentUpon>

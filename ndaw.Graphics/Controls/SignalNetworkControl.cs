@@ -10,28 +10,57 @@ using System.Collections.Specialized;
 
 namespace ndaw.Graphics.Controls
 {
-    public partial class SignalNetworkControl : DXControlBase
+    public partial class SignalNetworkControl : DXControlBase, IScrollableArea
     {
-        private int viewX;
-        private int viewY;
+        private Point viewPosition;
+        private Point minimumView = new Point(-100, -100);
+        private Point maximumView = new Point(1000, 1000);
 
-        public int ViewX
+        public event EventHandler<EventArgs> ViewPositionChange;
+        public event EventHandler<EventArgs> MinimumViewChange;
+        public event EventHandler<EventArgs> MaximumViewChange;
+
+        public Point ViewPosition
         {
-            get { return viewX; }
+            get { return viewPosition; }
             set
             {
-                viewX = value;
+                viewPosition = value;
+
+                if (ViewPositionChange != null)
+                {
+                    ViewPositionChange.Invoke(this, new EventArgs());
+                }
+
                 Refresh();
             }
         }
 
-        public int ViewY
+        public Point MinimumView
         {
-            get { return viewY; }
+            get { return minimumView; }
             set
             {
-                viewY = value;
-                Refresh();
+                minimumView = value;
+
+                if (MinimumViewChange != null)
+                {
+                    MinimumViewChange.Invoke(this, new EventArgs());
+                }
+            }
+        }
+
+        public Point MaximumView
+        {
+            get { return maximumView; }
+            set
+            {
+                maximumView = value;
+
+                if (MaximumViewChange != null)
+                {
+                    MaximumViewChange.Invoke(this, new EventArgs());
+                }
             }
         }
 
@@ -131,7 +160,7 @@ namespace ndaw.Graphics.Controls
 
         private void renderModels()
         {
-            var worldTransform = Matrix3x2.Translation(-viewX, -viewY);
+            var worldTransform = Matrix3x2.Translation(-viewPosition.X, -viewPosition.Y);
 
             foreach (var model in models.Values)
             {

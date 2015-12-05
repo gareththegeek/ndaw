@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ndaw.Graphics.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,19 +13,14 @@ namespace ndaw
 {
     public partial class SignalNetworkForm : Form
     {
+        public SignalNetworkControl SignalNetworkControl { get; set; }
+
         public SignalNetworkForm()
         {
             InitializeComponent();
-        }
 
-        private void verticalScrollBar_Scroll(object sender, ScrollEventArgs e)
-        {
-            SignalNetworkControl.ViewY = verticalScrollBar.Value;
-        }
-
-        private void horizontalScrollBar_Scroll(object sender, ScrollEventArgs e)
-        {
-            SignalNetworkControl.ViewX = horizontalScrollBar.Value;
+            SignalNetworkControl = new SignalNetworkControl();
+            scrollableAreaControl1.ScrollableArea = SignalNetworkControl;
         }
     }
 }
