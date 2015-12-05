@@ -15,10 +15,13 @@ namespace ndaw.Graphics.Controls
         private Point viewPosition;
         private Point minimumView = new Point(-100, -100);
         private Point maximumView = new Point(1000, 1000);
+        private float zoom = 1f;
+        private Matrix3x2 zoomTransform = Matrix3x2.Scaling(1f);
 
         public event EventHandler<EventArgs> ViewPositionChange;
         public event EventHandler<EventArgs> MinimumViewChange;
         public event EventHandler<EventArgs> MaximumViewChange;
+        public event EventHandler<EventArgs> ZoomChange;
 
         public Point ViewPosition
         {
@@ -61,6 +64,23 @@ namespace ndaw.Graphics.Controls
                 {
                     MaximumViewChange.Invoke(this, new EventArgs());
                 }
+            }
+        }
+
+        public float Zoom
+        {
+            get { return zoom; }
+            set
+            {
+                zoom = value;
+                zoomTransform = Matrix3x2.Scaling(zoom);
+
+                if (ZoomChange != null)
+                {
+                    ZoomChange.Invoke(this, new EventArgs());
+                }
+
+                Refresh();
             }
         }
 
@@ -146,6 +166,13 @@ namespace ndaw.Graphics.Controls
             }
         }
 
+        private void applyTransform(Matrix3x2 modelTransform)
+        {
+            var worldTransform = Matrix3x2.Translation(-viewPosition.X, -viewPosition.Y);
+
+            context.RenderTarget.Transform = worldTransform * modelTransform * zoomTransform;
+        }
+
         protected override void paint()
         {
             if (nodes == null) return;
@@ -160,18 +187,16 @@ namespace ndaw.Graphics.Controls
 
         private void renderModels()
         {
-            var worldTransform = Matrix3x2.Translation(-viewPosition.X, -viewPosition.Y);
-
             foreach (var model in models.Values)
             {
-                renderModel(worldTransform, model);
+                renderModel(model);
             }
         }
 
-        private void renderModel(Matrix3x2 worldTransform, SignalNodeViewModel model)
+        private void renderModel(SignalNodeViewModel model)
         {
-            var modelTransform = Matrix3x2.Translation(model.X, model.Y) * worldTransform;
-            context.RenderTarget.Transform = modelTransform;
+            var modelTransform = Matrix3x2.Translation(model.X, model.Y);
+            applyTransform(modelTransform);
 
             const int portSize = 32;
             const int margin = 20;
@@ -195,7 +220,7 @@ namespace ndaw.Graphics.Controls
                     Top = 0,
                     Height = boxHeight,
                     Width = boxWidth
-                }, boxBrush);
+                }, boxBrush, 1f/zoom);
 
             var fontX = (boxWidth - (int)nodeTitle.Metrics.Width) / 2;
             var fontY = (margin >> 1);
@@ -230,7 +255,7 @@ namespace ndaw.Graphics.Controls
 
             foreach (var port in ports)
             {
-                context.RenderTarget.Transform = modelTransform * portTransform;
+                applyTransform(modelTransform * portTransform);
 
                 var sinkTitle = new TextLayout(context.FontFactory, port.Name, portFont, 10000f, 0f);
                 context.RenderTarget.DrawTextLayout(Vector2.Zero, sinkTitle, boxBrush);
@@ -241,7 +266,7 @@ namespace ndaw.Graphics.Controls
                     Top = 0,
                     Width = size,
                     Height = size
-                }, boxBrush);
+                }, boxBrush, 1f / zoom);
 
                 portTransform *= Matrix3x2.Translation(0f, stride);
             }

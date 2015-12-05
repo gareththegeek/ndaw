@@ -12,9 +12,11 @@ namespace ndaw.Graphics.Controls
         Point ViewPosition { get; set; }
         Point MinimumView { get; set; }
         Point MaximumView { get; set; }
+        float Zoom { get; set; }
 
         event EventHandler<EventArgs> ViewPositionChange;
         event EventHandler<EventArgs> MinimumViewChange;
         event EventHandler<EventArgs> MaximumViewChange;
+        event EventHandler<EventArgs> ZoomChange;
     }
 }
