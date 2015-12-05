@@ -18,5 +18,7 @@ namespace ndaw.Graphics.Controls
         event EventHandler<EventArgs> MinimumViewChange;
         event EventHandler<EventArgs> MaximumViewChange;
         event EventHandler<EventArgs> ZoomChange;
+
+        IEnumerable<IDraggable> Draggables { get; }
     }
 }

@@ -23,6 +23,11 @@ namespace ndaw.Graphics.Controls
         public event EventHandler<EventArgs> MaximumViewChange;
         public event EventHandler<EventArgs> ZoomChange;
 
+        public IEnumerable<IDraggable> Draggables
+        {
+            get { return models.Values.Cast<IDraggable>(); }
+        }
+
         public Point ViewPosition
         {
             get { return viewPosition; }
@@ -212,6 +217,9 @@ namespace ndaw.Graphics.Controls
 
             var boxWidth = Math.Max(portColumnWidth * 2, nodeTitleWidth);
             var boxHeight = nodeTitleHeight + portColumnHeight * portCount;
+
+            model.Width = boxWidth;
+            model.Height = boxHeight;
 
             context.RenderTarget.DrawRectangle(
                 new RectangleF

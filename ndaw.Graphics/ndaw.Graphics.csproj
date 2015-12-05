@@ -70,6 +70,7 @@
     <Compile Include="Controls\FourierControl.Designer.cs">
       <DependentUpon>FourierControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\IDraggable.cs" />
     <Compile Include="Controls\IScrollableArea.cs" />
     <Compile Include="Controls\ScrollableAreaControl.cs">
       <SubType>UserControl</SubType>
