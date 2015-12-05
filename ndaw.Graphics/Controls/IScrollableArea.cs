@@ -10,8 +10,8 @@ namespace ndaw.Graphics.Controls
     public interface IScrollableArea
     {
         Point ViewPosition { get; set; }
-        Point MinimumView { get; }
-        Point MaximumView { get; }
+        Point MinimumView { get; set; }
+        Point MaximumView { get; set; }
 
         event EventHandler<EventArgs> ViewPositionChange;
         event EventHandler<EventArgs> MinimumViewChange;

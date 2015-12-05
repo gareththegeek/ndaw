@@ -51,10 +51,10 @@
             this.verticalScrollBar.LargeChange = 101;
             this.verticalScrollBar.Location = new System.Drawing.Point(1, 0);
             this.verticalScrollBar.Name = "verticalScrollBar";
-            this.verticalScrollBar.Scroll += verticalScrollBar_Scroll;
             this.verticalScrollBar.Size = new System.Drawing.Size(17, 441);
             this.verticalScrollBar.SmallChange = 50;
             this.verticalScrollBar.TabIndex = 0;
+            this.verticalScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.verticalScrollBar_Scroll);
             // 
             // horizontalScrollBar
             // 
@@ -62,10 +62,10 @@
             this.horizontalScrollBar.LargeChange = 100;
             this.horizontalScrollBar.Location = new System.Drawing.Point(0, 442);
             this.horizontalScrollBar.Name = "horizontalScrollBar";
-            this.horizontalScrollBar.Scroll += horizontalScrollBar_Scroll;
             this.horizontalScrollBar.Size = new System.Drawing.Size(738, 17);
             this.horizontalScrollBar.SmallChange = 10;
             this.horizontalScrollBar.TabIndex = 5;
+            this.horizontalScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.horizontalScrollBar_Scroll);
             // 
             // pnlScrollableArea
             // 
