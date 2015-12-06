@@ -22,12 +22,7 @@ namespace ndaw.Graphics.Controls
         public event EventHandler<EventArgs> MinimumViewChange;
         public event EventHandler<EventArgs> MaximumViewChange;
         public event EventHandler<EventArgs> ZoomChange;
-
-        public IEnumerable<IDraggable> Draggables
-        {
-            get { return models.Values.Cast<IDraggable>(); }
-        }
-
+        
         public Point ViewPosition
         {
             get { return viewPosition; }
@@ -105,6 +100,9 @@ namespace ndaw.Graphics.Controls
         private TextFormat nodeFont;
         private TextFormat portFont;
 
+        private DragConnection dragConnection;
+        private IDraggable draggedPort;
+
         public ObservableCollection<ISignalNode> Nodes
         {
             get { return nodes; }
@@ -122,6 +120,85 @@ namespace ndaw.Graphics.Controls
                     nodes.CollectionChanged += nodes_CollectionChanged;
                 }
             }
+        }
+
+        private bool overlaps(int x, int y, IDraggable draggable)
+        {
+            return x >= draggable.X
+                    && x <= draggable.X + draggable.Width
+                    && y >= draggable.Y
+                    && y <= draggable.Y + draggable.Height;
+        }
+
+        private IDraggable getDraggableAt(int x, int y)
+        {
+            foreach (var sink in models.Values.SelectMany(m => m.Sinks))
+            {
+                if (overlaps(x, y, sink))
+                {
+                    return sink;
+                }
+            }
+
+            foreach (var source in models.Values.SelectMany(m => m.Sources))
+            {
+                if (overlaps(x, y, source))
+                {
+                    return source;
+                }
+            }
+
+            foreach (var model in models.Values)
+            {
+                if (overlaps(x, y, model))
+                {
+                    return model;
+                }
+            }
+
+            return null;
+        }
+
+        public IDraggable BeginDragAt(int x, int y)
+        {
+            var draggable = getDraggableAt(x, y);
+
+            if (draggable is SignalSinkViewModel)
+            {
+                var sink = draggable as SignalSinkViewModel;
+                if (sink.Sink.Source != null)
+                {
+                    draggedPort = getSourceModelForSink(sink);
+
+                    disconnect(sink);
+
+                    dragConnection = new DragConnection
+                    {
+                        X = sink.X,
+                        Y = sink.Y,
+                        Width = sink.Width,
+                        Height = sink.Height
+                    };
+                    return dragConnection;
+                }
+            }
+
+            if (draggable is SignalSinkViewModel
+                || draggable is SignalSourceViewModel)
+            {
+
+                draggedPort = draggable;
+                dragConnection = new DragConnection
+                {
+                    X = draggable.X,
+                    Y = draggable.Y,
+                    Width = draggable.Width,
+                    Height = draggable.Height
+                };
+                return dragConnection;
+            }
+
+            return draggable;
         }
 
         private void SignalNetworkControl_Load(object sender, EventArgs e)
@@ -163,7 +240,9 @@ namespace ndaw.Graphics.Controls
                         //TODO find sensible place to dump nodes
                         //TODO generation of models should be delegated to another class
                         X = i,
-                        Y = 20
+                        Y = 20,
+                        Sinks = node.Sinks.Select(s => new SignalSinkViewModel { Sink = s }).ToList(),
+                        Sources = node.Sources.Select(s => new SignalSourceViewModel { Source = s }).ToList(),
                     };
                     models[node] = model;
                 }
@@ -186,6 +265,8 @@ namespace ndaw.Graphics.Controls
             context.RenderTarget.Clear(Color4.White);
 
             renderModels();
+            renderConnections();
+            renderDragConnection();
 
             context.RenderTarget.EndDraw();
         }
@@ -235,7 +316,7 @@ namespace ndaw.Graphics.Controls
             context.RenderTarget.DrawTextLayout(new Vector2(fontX, fontY), nodeTitle, boxBrush);
 
             renderPorts(
-                model.Node.Sinks, 
+                model.Sinks, 
                 modelTransform, 
                 margin,
                 nodeTitleHeight,
@@ -243,7 +324,7 @@ namespace ndaw.Graphics.Controls
                 portColumnHeight);
 
             renderPorts(
-                model.Node.Sources, 
+                model.Sources, 
                 modelTransform, 
                 boxWidth - portSize - margin, 
                 nodeTitleHeight, 
@@ -252,17 +333,22 @@ namespace ndaw.Graphics.Controls
         }
 
         private void renderPorts(
-            IEnumerable<INamed> ports,
+            IEnumerable<IDraggable> ports,
             Matrix3x2 modelTransform,
-            int x, 
+            int x,
             int y,
-            int size, 
+            int size,
             int stride)
         {
             var portTransform = Matrix3x2.Translation(x, y);
-
+            
             foreach (var port in ports)
             {
+                port.X = (int)(modelTransform.TranslationVector.X + portTransform.TranslationVector.X);
+                port.Y = (int)(modelTransform.TranslationVector.Y + portTransform.TranslationVector.Y);
+                port.Width = size;
+                port.Height = size;
+
                 applyTransform(modelTransform * portTransform);
 
                 var sinkTitle = new TextLayout(context.FontFactory, port.Name, portFont, 10000f, 0f);
@@ -278,6 +364,82 @@ namespace ndaw.Graphics.Controls
 
                 portTransform *= Matrix3x2.Translation(0f, stride);
             }
+        }
+
+        private void renderConnections()
+        {
+            applyTransform(Matrix3x2.Identity);
+
+            foreach (var sink in models.Values.SelectMany(m => m.Sinks).Where(s => s.Sink.Source != null))
+            {
+                var source = getSourceModelForSink(sink);
+
+                var v0 = new Vector2(sink.X + sink.Width / 2, sink.Y + sink.Height / 2);
+                var v1 = new Vector2(source.X + source.Width / 2, source.Y + source.Height / 2);
+
+                context.RenderTarget.DrawLine(v0, v1, boxBrush, 1f / zoom);
+            }
+        }
+
+        private SignalSourceViewModel getSourceModelForSink(SignalSinkViewModel sink)
+        {
+            var source = sink.Sink.Source;
+            var owner = source.Owner;
+            var ownerModel = models[owner];
+            return ownerModel.Sources.Single(s => s.Name == source.Name);
+        }
+
+        private void renderDragConnection()
+        {
+            if (dragConnection == null) return;
+
+            applyTransform(Matrix3x2.Identity);
+
+            var hWidth = draggedPort.Width / 2f;
+            var hHeight = draggedPort.Height / 2f;
+
+            var x0 = draggedPort.X + hWidth;
+            var y0 = draggedPort.Y + hHeight;
+
+            var x1 = dragConnection.X;
+            var y1 = dragConnection.Y;
+
+            context.RenderTarget.DrawLine(new Vector2(x0, y0), new Vector2(x1, y1), boxBrush, 1f / zoom);
+        }
+
+        public void DragComplete(IDraggable draggable)
+        {
+            if (draggable == null) return;
+
+            if (draggable == dragConnection)
+            {
+                var target = getDraggableAt(dragConnection.X, dragConnection.Y);
+                
+                if (target is SignalSourceViewModel && draggedPort is SignalSinkViewModel)
+                {
+                    connect(target as SignalSourceViewModel, draggedPort as SignalSinkViewModel);
+                }
+                else if (target is SignalSinkViewModel && draggedPort is SignalSourceViewModel)
+                {
+                    connect(draggedPort as SignalSourceViewModel, target as SignalSinkViewModel);
+                }
+
+                dragConnection = null;
+                draggedPort = null;
+
+                Refresh();
+            }
+        }
+
+        private void connect(SignalSourceViewModel source, SignalSinkViewModel sink)
+        {
+            //TODO check connection doesn't already exist
+            sink.Sink.Source = source.Source;
+        }
+
+        private void disconnect(SignalSinkViewModel sink)
+        {
+            sink.Sink.Source = null;
         }
     }
 }

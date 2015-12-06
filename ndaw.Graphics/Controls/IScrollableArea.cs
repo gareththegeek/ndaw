@@ -1,9 +1,5 @@
 ﻿using SharpDX;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ndaw.Graphics.Controls
 {
@@ -19,6 +15,7 @@ namespace ndaw.Graphics.Controls
         event EventHandler<EventArgs> MaximumViewChange;
         event EventHandler<EventArgs> ZoomChange;
 
-        IEnumerable<IDraggable> Draggables { get; }
+        IDraggable BeginDragAt(int x, int y);
+        void DragComplete(IDraggable draggable);
     }
 }

@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ndaw.Core.Routing;
 
 namespace ndaw.Graphics.Controls
 {
-    public interface IDraggable
+    public interface IDraggable: INamed
     {
         int X { get; set; }
         int Y { get; set; }
-        int Width { get; }
-        int Height { get; }
+        int Width { get; set; }
+        int Height { get; set; }
+        bool Offset { get; }
     }
 }

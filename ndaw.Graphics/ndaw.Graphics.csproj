@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\DragConnection.cs" />
     <Compile Include="Controls\DXRealTimeControlBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -85,6 +86,8 @@
       <DependentUpon>SignalNetworkControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\SignalNodeViewModel.cs" />
+    <Compile Include="Controls\SignalSourceViewModel.cs" />
+    <Compile Include="Controls\SignalSinkViewModel.cs" />
     <Compile Include="Devices\DeviceManager.cs" />
     <Compile Include="Controls\DXControlBase.cs">
       <SubType>UserControl</SubType>
