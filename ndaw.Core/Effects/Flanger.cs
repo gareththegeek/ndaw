@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using NAudio.Utils;
+using NAudio.Wave;
 using ndaw.Core.Routing;
 using System;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace ndaw.Core.Effects
             get { return depth; } 
             set 
             {
-                if (depth < 0f || depth > 1f)
+                if (value < 0f || value > 1f)
                 {
                     throw new ArgumentOutOfRangeException("value", "Depth must be between 0 and 1");
                 }
@@ -44,28 +45,13 @@ namespace ndaw.Core.Effects
             get { return wet; }
             set
             {
-                if (wet < 0f || wet > 1f)
+                if (value < 0f || value > 1f)
                 {
                     throw new ArgumentOutOfRangeException("value", "Wet must be between 0 and 1");
                 }
 
                 wet = value;
                 dry = 1f - value;
-            }
-        }
-
-        private float volume = 1f;
-        public float Volume
-        {
-            get { return volume; }
-            set
-            {
-                if (volume < 0f || volume > 1f)
-                {
-                    throw new ArgumentOutOfRangeException("value", "Volume must be between 0 and 1");
-                }
-
-                volume = value;
             }
         }
 
@@ -76,7 +62,7 @@ namespace ndaw.Core.Effects
             get { return frequency; }
             set
             {
-                if (frequency < 0f)
+                if (value < 0f)
                 {
                     throw new ArgumentOutOfRangeException("value", "Frequency must be a positive value");
                 }
@@ -89,15 +75,29 @@ namespace ndaw.Core.Effects
             }
         }
 
-        private const float maximumDelay = 88.2f;
+        private int bufferLength = 45;
+        private float maximumDelay = 1f;
+        private float maximumDelaySamples = 44.1f;
         public float MaximumDelay
         {
             get { return maximumDelay; }
             set
             {
-                if (maximumDelay > BufferLength * 2 || maximumDelay < 1f)
+                if (value <= 0f)
                 {
-                    throw new ArgumentOutOfRangeException("value", string.Format("MaximumDelay must be between 1 and {0} sample(s)", BufferLength));
+                    throw new ArgumentOutOfRangeException("value", "Maximum delay must be positive");
+                }
+
+                maximumDelay = value;
+                maximumDelaySamples = Utility.MillisecondsToSamples(format.SampleRate, maximumDelay);
+                if (format != null)
+                {
+                    bufferLength = (int)Math.Ceiling(maximumDelaySamples);
+
+                    foreach (var channel in channels)
+                    {
+                        channel.DelayBuffer = BufferHelpers.Ensure(channel.DelayBuffer, bufferLength);
+                    }
                 }
             }
         }
@@ -112,11 +112,14 @@ namespace ndaw.Core.Effects
 
                 if (format != null)
                 {
+                    maximumDelaySamples = Utility.MillisecondsToSamples(format.SampleRate, maximumDelay);
+                    bufferLength = (int)Math.Ceiling(maximumDelaySamples);
+
                     channels = new ChannelData[format.Channels];
                     for (int i = 0; i < format.Channels; i++)
                     {
                         var channel = new ChannelData();
-                        channel.DelayBuffer = new float[BufferLength];
+                        channel.DelayBuffer = new float[bufferLength];
                         channels[i] = channel;
                     }
 
@@ -124,8 +127,6 @@ namespace ndaw.Core.Effects
                 }
             }
         }
-
-        private const int BufferLength = 88200;
 
         private ChannelData[] channels;
 
@@ -173,21 +174,21 @@ namespace ndaw.Core.Effects
 
                 int s = channel.Time++;
 
-                var delay = ((Math.Sin(2f * Math.PI * s * lfoFactor) * depth + 1f) * maximumDelay / 2f);
+                var delay = ((Math.Sin(2f * Math.PI * s * lfoFactor) * depth + 1f) * maximumDelaySamples / 2f);
 
                 float delaySample;
 
                 var delayPosition = channel.Position - (int)delay;
 
-                delayPosition += BufferLength;
-                delayPosition %= BufferLength;
+                delayPosition += bufferLength;
+                delayPosition %= bufferLength;
 
                 delaySample = (float)(channel.DelayBuffer[delayPosition]);
 
-                buffer[i] = (sample * dry + delaySample * wet) * volume;
+                buffer[i] = (sample * dry + delaySample * wet);
 
                 channel.Position += 1;
-                channel.Position %= BufferLength;
+                channel.Position %= bufferLength;
             }
         }
     }
