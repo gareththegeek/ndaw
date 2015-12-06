@@ -23,6 +23,13 @@ namespace ndaw.Core.Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Should_throw_if_no_lfo_provider_to_constructor()
+        {
+            target = new Flanger(null);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Should_throw_if_depth_is_negative()
         {
@@ -238,6 +245,29 @@ namespace ndaw.Core.Tests
             Assert.AreEqual((4f + 3f) / 2, buffers[0][0], 0.00001f);
             Assert.AreEqual((5f + 4f) / 2, buffers[0][1], 0.00001f);
             Assert.AreEqual((6f + 5f) / 2, buffers[0][2], 0.00001f);
+        }
+
+        [TestMethod]
+        public void Should_return_the_name_Flanger()
+        {
+            Assert.AreEqual("Flanger", target.Name);
+        }
+
+        [TestMethod]
+        public void Should_correctly_store_settings()
+        {
+            target.Depth = 1f;
+            target.Wet = 0.5f;
+            target.Frequency = 100f;
+            target.MaximumDelay = 12f;
+            var expectedFormat = new WaveFormat();
+            target.Format = expectedFormat;
+
+            Assert.AreEqual(1f, target.Depth);
+            Assert.AreEqual(0.5f, target.Wet);
+            Assert.AreEqual(100f, target.Frequency);
+            Assert.AreEqual(12f, target.MaximumDelay);
+            Assert.AreEqual(expectedFormat, target.Format);
         }
     }
 }

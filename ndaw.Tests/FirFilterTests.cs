@@ -20,6 +20,13 @@ namespace ndaw.Core.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
+        public void Should_throw_if_coefficients_are_set_to_null()
+        {
+            target.Coefficients = null;
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Should_throw_if_buffer_is_null()
         {
             target.Coefficients = new[] { 1f };
@@ -62,6 +69,28 @@ namespace ndaw.Core.Tests
             target.Format = null;
 
             target.Process(buffer, 1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Should_throw_if_more_channels_than_buffer()
+        {
+            target.Format = new WaveFormat(44100, 2);
+
+            var buffers = new float[][] { new[] { 1f } };
+
+            target.Process(buffers, 1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Should_throw_if_more_buffers_than_channels()
+        {
+            target.Format = new WaveFormat(44100, 1);
+
+            var buffers = new float[][] { new[] { 1f }, new[] { 2f } };
+
+            target.Process(buffers, 1);
         }
 
         [TestMethod]
@@ -165,6 +194,36 @@ namespace ndaw.Core.Tests
             Assert.AreEqual(7f + 0.5f * 5f, buffers[0][1], 0.0001);
             Assert.AreEqual(6f + 0.5f * 4f, buffers[1][0], 0.0001);
             Assert.AreEqual(8f + 0.5f * 6f, buffers[1][1], 0.0001);
+        }
+
+        [TestMethod]
+        public void Should_return_the_name_fir_filter()
+        {
+            target = new FirFilter();
+
+            Assert.AreEqual("FIR Filter", target.Name);
+        }
+
+        [TestMethod]
+        public void Should_correctly_store_coefficients()
+        {
+            target = new FirFilter();
+
+            var expectedCoefficients = new float[] { };
+            target.Coefficients = expectedCoefficients;
+
+            Assert.AreEqual(expectedCoefficients, target.Coefficients);
+        }
+
+        [TestMethod]
+        public void Should_correctly_store_format()
+        {
+            target = new FirFilter();
+
+            var expectedFormat = new WaveFormat();
+            target.Format = expectedFormat;
+
+            Assert.AreEqual(expectedFormat, target.Format);
         }
     }
 }

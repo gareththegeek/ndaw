@@ -87,9 +87,10 @@ namespace ndaw.Core.Effects
                 }
 
                 maximumDelay = value;
-                maximumDelaySamples = Utility.MillisecondsToSamples(format.SampleRate, maximumDelay);
+                
                 if (format != null)
                 {
+                    maximumDelaySamples = Utility.MillisecondsToSamples(format.SampleRate, maximumDelay);
                     bufferLength = (int)Math.Ceiling(maximumDelaySamples);
 
                     foreach (var channel in channels)

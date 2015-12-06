@@ -1,6 +1,7 @@
 ﻿using NAudio.Utils;
 using NAudio.Wave;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace ndaw.Core.Filters.Implementations
@@ -149,6 +150,7 @@ namespace ndaw.Core.Filters.Implementations
             channel.Position = position;
         }
 
+        [ExcludeFromCodeCoverage]
         private void processSafe(ChannelData channel, float[] buffer, int count)
         {
             var inputHistoryLength = channel.InputHistory.Length;
