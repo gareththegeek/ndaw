@@ -90,6 +90,7 @@
     <Compile Include="Soundcard\Wave\WaveCard.cs" />
     <Compile Include="Soundcard\Wave\WaveInputMapper.cs" />
     <Compile Include="Soundcard\Wave\WaveOutputMapper.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

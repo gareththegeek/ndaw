@@ -149,7 +149,7 @@ namespace ndaw
             fourierNode = new MonoSignalNode(monoFormat, fourier);
             fourier.DataReady += fourierControl.fourier_DataReady;
 
-            flanger = new Flanger();
+            flanger = new Flanger(new SineWave());
             flangerNode = new MonoSignalNode(monoFormat, flanger);
 
             flangerNode.CentreIn.Source = asioInput.Sources.First();

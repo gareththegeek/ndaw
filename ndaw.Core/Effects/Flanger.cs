@@ -1,5 +1,6 @@
 ﻿using NAudio.Utils;
 using NAudio.Wave;
+using ndaw.Core.Oscillators;
 using ndaw.Core.Routing;
 using System;
 using System.Linq;
@@ -34,7 +35,8 @@ namespace ndaw.Core.Effects
                     throw new ArgumentOutOfRangeException("value", "Depth must be between 0 and 1");
                 }
 
-                depth = value; 
+                depth = value;
+                lfo.Amplitude = depth;//TEST
             }
         }
 
@@ -56,7 +58,6 @@ namespace ndaw.Core.Effects
         }
 
         private float frequency;
-        private float lfoFactor;
         public float Frequency
         {
             get { return frequency; }
@@ -68,10 +69,7 @@ namespace ndaw.Core.Effects
                 }
 
                 frequency = value;
-                if (format != null)
-                {
-                    lfoFactor = frequency / format.SampleRate;
-                }
+                lfo.Frequency = value;
             }
         }
 
@@ -123,16 +121,24 @@ namespace ndaw.Core.Effects
                         channels[i] = channel;
                     }
 
-                    lfoFactor = frequency / format.SampleRate;
+                    lfo.Format = format;
                 }
             }
         }
 
         private ChannelData[] channels;
+        private IOscillator lfo;
 
-        public Flanger()
+        public Flanger(IOscillator lfo)
         {
+            if (lfo == null)
+            {
+                throw new ArgumentNullException("lfo", "Low frequency oscillator cannot be null");
+            }
+
+            this.lfo = lfo;
             this.Frequency = 0.25f;
+            this.Depth = 1f;
         }
 
         public void Process(float[][] buffers, int count)
@@ -174,7 +180,7 @@ namespace ndaw.Core.Effects
 
                 int s = channel.Time++;
 
-                var delay = ((Math.Sin(2f * Math.PI * s * lfoFactor) * depth + 1f) * maximumDelaySamples / 2f);
+                var delay = (lfo.Generate(s) + 1f) * (maximumDelaySamples / 2f);
 
                 float delaySample;
 

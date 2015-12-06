@@ -37,7 +37,7 @@ namespace ndaw.Core.Oscillators
             {
                 if (value < 0f || value > 1f)
                 {
-                    throw new ArgumentOutOfRangeException("value", "Amplitude must be between 0 and 1");
+                    throw new ArgumentOutOfRangeException("value", "Amplitude must be between zero and one");
                 }
 
                 amplitude = value;
@@ -89,7 +89,7 @@ namespace ndaw.Core.Oscillators
 
             for (int i = 0; i < count; i++)
             {
-                var sample = (float)(amplitude * Math.Sin(2f * Math.PI * (time / frequencyInSamples)));
+                var sample = Generate(time);
 
                 for (int j = 0; j < format.Channels; j++)
                 {
@@ -98,6 +98,11 @@ namespace ndaw.Core.Oscillators
 
                 time++;
             }
+        }
+
+        public float Generate(int time)
+        {
+            return (float)(amplitude * Math.Sin(2f * Math.PI * (time / frequencyInSamples)));
         }
     }
 }

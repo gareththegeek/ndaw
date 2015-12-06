@@ -39,6 +39,9 @@
     <Reference Include="NAudio">
       <HintPath>..\packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
     </Reference>
+    <Reference Include="NSubstitute">
+      <HintPath>..\packages\NSubstitute.1.9.2.0\lib\net45\NSubstitute.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -56,6 +59,7 @@
   <ItemGroup>
     <Compile Include="FirFilterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FlangerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -88,7 +88,7 @@ namespace ndaw.Core.Oscillators
 
             for (int i = 0; i < count; i++)
             {
-                var sample = ((time / halfFrequencyInSamples) % 2f) * amplitude;
+                var sample = Generate(time);
 
                 for (int j = 0; j < format.Channels; j++)
                 {
@@ -97,6 +97,11 @@ namespace ndaw.Core.Oscillators
                 
                 time++;
             }
+        }
+
+        public float Generate(int time)
+        {
+            return ((time / halfFrequencyInSamples) % 2f) * amplitude;
         }
     }
 }
