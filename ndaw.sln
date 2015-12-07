@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw", "NAudio6\ndaw.csproj", "{A2C7208A-71C2-4179-86BC-C336B28974DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw", "ndaw\ndaw.csproj", "{A2C7208A-71C2-4179-86BC-C336B28974DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ndaw.Core.PerformanceTest", "ndaw.PerformanceTest\ndaw.Core.PerformanceTest.csproj", "{15651AC6-DB64-4443-AA67-B41BB6FD6439}"
 EndProject
