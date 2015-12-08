@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ndaw.Core.Filters.Implementations;
 using NAudio.Wave;
 
-namespace ndaw.Core.Tests
+namespace ndaw.Core.Tests.Implementations
 {
     [TestClass]
     public class FirFilterTests

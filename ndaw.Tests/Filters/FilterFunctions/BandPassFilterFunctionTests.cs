@@ -2,15 +2,16 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ndaw.Core.Filters.FilterFunctions;
 
-namespace ndaw.Core.Tests
+namespace ndaw.Core.Tests.FilterFunctions
 {
     [TestClass]
-    public class HighPassFilterFunctionTests
+    public class BandPassFilterFunctionTests
     {
         [TestMethod]
-        public void Should_not_throw_if_lower_cutoff_frequency_is_negative()
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Should_throw_if_lower_cutoff_frequency_is_negative()
         {
-            var target = new HighPassFilterFunction();
+            var target = new BandPassFilterFunction();
 
             target.CalculateCoefficients(1, -1f, 1f, 1);
         }
@@ -19,7 +20,7 @@ namespace ndaw.Core.Tests
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Should_throw_if_upper_cutoff_frequency_is_negative()
         {
-            var target = new HighPassFilterFunction();
+            var target = new BandPassFilterFunction();
 
             target.CalculateCoefficients(1, 1f, -1f, 1);
         }
@@ -28,7 +29,7 @@ namespace ndaw.Core.Tests
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Should_throw_if_filter_order_is_negative()
         {
-            var target = new HighPassFilterFunction();
+            var target = new BandPassFilterFunction();
 
             target.CalculateCoefficients(-1, 1f, 1f, 1);
         }
@@ -37,7 +38,7 @@ namespace ndaw.Core.Tests
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Should_throw_if_sample_rate_is_negative()
         {
-            var target = new HighPassFilterFunction();
+            var target = new BandPassFilterFunction();
 
             target.CalculateCoefficients(1, 1f, 1f, -1);
         }
@@ -45,24 +46,24 @@ namespace ndaw.Core.Tests
         [TestMethod]
         public void Should_correctly_calculate_coefficients_for_even_numbered_order()
         {
-            var target = new HighPassFilterFunction();
+            var target = new BandPassFilterFunction();
 
             var expected = new float[]
             {
-                -0.04161178f,
-                -0.0429360829f,
-                -0.0439831242f,
-                -0.0447402224f,
-                -0.0451981947f,
-                0.954648554f,
-                -0.0451981947f,
-                -0.0447402224f,
-                -0.0439831242f,
-                -0.0429360829f,
-                -0.04161178f
+                0.0370804667f,
+                0.03840339f,
+                0.0394493565f,
+                0.04020569f,
+                0.0406632f,
+                0.0408163257f,
+                0.0406632f,
+                0.04020569f,
+                0.0394493565f,
+                0.03840339f,
+                0.0370804667f
             };
 
-            var actual = target.CalculateCoefficients(10, 0f, 1000f, 44100);
+            var actual = target.CalculateCoefficients(10, 100f, 1000f, 44100);
 
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < expected.Length; i++)
@@ -74,25 +75,25 @@ namespace ndaw.Core.Tests
         [TestMethod]
         public void Should_correctly_calculate_coefficients_for_odd_numbered_order()
         {
-            var target = new HighPassFilterFunction();
+            var target = new BandPassFilterFunction();
 
             var expected = new float[]
             {
-                -0.04161178f,
-                -0.0429360829f,
-                -0.0439831242f,
-                -0.0447402224f,
-                -0.0451981947f,
-                0.954648554f,
-                -0.0451981947f,
-                -0.0447402224f,
-                -0.0439831242f,
-                -0.0429360829f,
-                -0.04161178f,
-                -0.0400261879f
+                0.0370804667f,
+                0.03840339f,
+                0.0394493565f,
+                0.04020569f,
+                0.0406632f,
+                0.0408163257f,
+                0.0406632f,
+                0.04020569f,
+                0.0394493565f,
+                0.03840339f,
+                0.0370804667f,
+                0.0354965627f
             };
 
-            var actual = target.CalculateCoefficients(11, 0f, 1000f, 44100);
+            var actual = target.CalculateCoefficients(11, 100f, 1000f, 44100);
 
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < expected.Length; i++)

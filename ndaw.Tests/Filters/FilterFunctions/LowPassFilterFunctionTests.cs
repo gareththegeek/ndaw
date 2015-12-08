@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ndaw.Core.Filters.FilterFunctions;
 
-namespace ndaw.Core.Tests
+namespace ndaw.Core.Tests.FilterFunctions
 {
     [TestClass]
     public class LowPassFilterFunctionTests

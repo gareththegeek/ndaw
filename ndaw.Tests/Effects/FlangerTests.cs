@@ -5,7 +5,7 @@ using NAudio.Wave;
 using ndaw.Core.Oscillators;
 using NSubstitute;
 
-namespace ndaw.Core.Tests
+namespace ndaw.Core.Tests.Effects
 {
     [TestClass]
     public class FlangerTests

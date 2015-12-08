@@ -57,13 +57,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="HighPassFilterFunctionTests.cs" />
-    <Compile Include="LowPassFilterFunctionTests.cs" />
-    <Compile Include="BandStopFilterFunctionTests.cs" />
-    <Compile Include="FirFilterTests.cs" />
+    <Compile Include="Filters\FilterFunctions\HighPassFilterFunctionTests.cs" />
+    <Compile Include="Filters\FilterFunctions\LowPassFilterFunctionTests.cs" />
+    <Compile Include="Filters\FilterFunctions\BandStopFilterFunctionTests.cs" />
+    <Compile Include="Filters\Implementations\FirFilterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FlangerTests.cs" />
-    <Compile Include="BandPassFilterFunctionTests.cs" />
+    <Compile Include="Effects\FlangerTests.cs" />
+    <Compile Include="Filters\FilterFunctions\BandPassFilterFunctionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
