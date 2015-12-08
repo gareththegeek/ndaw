@@ -6,6 +6,11 @@ namespace ndaw.Core.Filters.WindowFunctions
     {
         public float[] CalculateCoefficients(int filterOrder /* Number of coefficients */)
         {
+            if (filterOrder <= 0)
+            {
+                throw new ArgumentOutOfRangeException("filterOrder", "Filter order must be a positive value");
+            }
+
             var N = filterOrder;
             var w = new float[N + 1];
             for (int n = 0; n <= N; n++)
