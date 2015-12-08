@@ -57,9 +57,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="HighPassFilterFunctionTests.cs" />
+    <Compile Include="LowPassFilterFunctionTests.cs" />
+    <Compile Include="BandStopFilterFunctionTests.cs" />
     <Compile Include="FirFilterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FlangerTests.cs" />
+    <Compile Include="BandPassFilterFunctionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

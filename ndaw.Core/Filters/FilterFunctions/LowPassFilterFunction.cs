@@ -4,8 +4,25 @@ namespace ndaw.Core.Filters.FilterFunctions
 {
     public class LowPassFilterFunction: IFilterFunction
     {
-        public float[] CalculateCoefficients(int filterOrder, float lowerCutoffFrequency, float upperCutoffFrequency, int sampleRate)
+        public float[] CalculateCoefficients(
+            int filterOrder, 
+            float lowerCutoffFrequency, 
+            float upperCutoffFrequency, 
+            int sampleRate)
         {
+            if (filterOrder <= 0)
+            {
+                throw new ArgumentOutOfRangeException("filterOrder", "Order must be a positive value");
+            }
+            if (lowerCutoffFrequency <= 0f)
+            {
+                throw new ArgumentOutOfRangeException("lowerCutoffFrequency", "Lower cut-off frequency must be a positive value");
+            }
+            if (sampleRate <= 0f)
+            {
+                throw new ArgumentOutOfRangeException("sampleRate", "Sample rate must be a positive value");
+            }
+
             var N = filterOrder;
             var M = N / 2;
 
