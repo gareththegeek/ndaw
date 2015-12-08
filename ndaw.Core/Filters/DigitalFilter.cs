@@ -41,11 +41,6 @@ namespace ndaw.Core.Filters
             get { return filterFunction; }
             set
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value", "Filter function cannot be null");
-                }
-
                 filterFunction = value;
             }
         }
@@ -54,7 +49,15 @@ namespace ndaw.Core.Filters
         {
             if (filterFunction == null)
             {
-                throw new NotSupportedException("Must have a filter function in order to calculate coefficients");
+                throw new InvalidOperationException("Must have a filter function in order to calculate coefficients");
+            }
+            if (filterOrder <= 0)
+            {
+                throw new ArgumentOutOfRangeException("filterOrder", "Filter order must be a positive value");
+            }
+            if (sampleRate <= 0)
+            {
+                throw new ArgumentOutOfRangeException("sampleRate", "Sample rate must be a positive value");
             }
 
             return filterFunction.CalculateCoefficients(

@@ -38,11 +38,7 @@ namespace ndaw.Core.Tests.Filters.WindowFunctions
 
             var actual = target.CalculateCoefficients(10);
 
-            Assert.AreEqual(expected.Length, actual.Length);
-            for (int i = 0; i < expected.Length; i++)
-            {
-                Assert.AreEqual(expected[i], actual[i]);
-            }
+            CollectionAssert.AreEqual(expected, actual);
         }
     }
 }

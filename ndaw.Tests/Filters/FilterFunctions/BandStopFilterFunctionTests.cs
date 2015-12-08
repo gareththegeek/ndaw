@@ -65,11 +65,7 @@ namespace ndaw.Core.Tests.FilterFunctions
 
             var actual = target.CalculateCoefficients(10, 100f, 1000f, 44100);
 
-            Assert.AreEqual(expected.Length, actual.Length);
-            for (int i = 0; i < expected.Length; i++)
-            {
-                Assert.AreEqual(expected[i], actual[i], 0.00001f);
-            }
+            CollectionAssert.AreEqual(expected, actual);
         }
 
         [TestMethod]
@@ -95,11 +91,7 @@ namespace ndaw.Core.Tests.FilterFunctions
 
             var actual = target.CalculateCoefficients(11, 100f, 1000f, 44100);
 
-            Assert.AreEqual(expected.Length, actual.Length);
-            for (int i = 0; i < expected.Length; i++)
-            {
-                Assert.AreEqual(expected[i], actual[i], 0.00001f);
-            }
+            CollectionAssert.AreEqual(expected, actual);
         }
     }
 }
