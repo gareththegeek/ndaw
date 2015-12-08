@@ -62,6 +62,7 @@
     <Compile Include="Filters\FilterFunctions\BandStopFilterFunctionTests.cs" />
     <Compile Include="Filters\Implementations\FirFilterTests.cs" />
     <Compile Include="Filters\DigitalFilterTests.cs" />
+    <Compile Include="Filters\ComplexFilterTests.cs" />
     <Compile Include="Filters\WindowFunctions\RectangularWindowFunctionTests.cs" />
     <Compile Include="Filters\WindowFunctions\HammingWindowFunctionTests.cs" />
     <Compile Include="Filters\WindowFunctions\BlackmanWindowFunctionTests.cs" />

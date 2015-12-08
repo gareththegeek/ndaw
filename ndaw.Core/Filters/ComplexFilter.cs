@@ -100,6 +100,11 @@ namespace ndaw.Core.Filters
                 windowFunction.CalculateCoefficients(
                     filterOrder);
 
+            if (windowFunctionCoefficients.Length != filterOrder + 1)
+            {
+                throw new InvalidOperationException("Window function must return filter order plus one coefficients");
+            }
+
             var filterFunctionCoefficients = Enumerable.Repeat(1f, filterOrder + 1).ToArray();
             foreach (var filter in filters)
             {
