@@ -56,6 +56,7 @@
     <Compile Include="Filters\FilterFunctions\HighPassFilterFunction.cs" />
     <Compile Include="Filters\FilterFunctions\IFilterFunction.cs" />
     <Compile Include="Filters\FilterFunctions\LowPassFilterFunction.cs" />
+    <Compile Include="Filters\IDigitalFilter.cs" />
     <Compile Include="Filters\Implementations\FirFilter.cs" />
     <Compile Include="Filters\Implementations\IFilterImplementation.cs" />
     <Compile Include="Filters\WindowFunctions\BlackmanHarrisWindowFunction.cs" />

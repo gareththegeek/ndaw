@@ -11,8 +11,8 @@ namespace ndaw.Core.Filters
 {
     public class ComplexFilter
     {
-        private ObservableCollection<DigitalFilter> filters;
-        public ICollection<DigitalFilter> Filters
+        private ObservableCollection<IDigitalFilter> filters;
+        public ICollection<IDigitalFilter> Filters
         {
             get { return filters; }
         }
@@ -83,7 +83,7 @@ namespace ndaw.Core.Filters
             this.windowFunction = windowFunction;
             this.FilterImplementation = filterImplementation;
 
-            this.filters = new ObservableCollection<DigitalFilter>();
+            this.filters = new ObservableCollection<IDigitalFilter>();
             this.filters.CollectionChanged += filters_CollectionChanged;
 
             updateCoefficients();
@@ -112,6 +112,11 @@ namespace ndaw.Core.Filters
                     filter.CalculateCoefficients(
                         filterOrder,
                         format.SampleRate);
+
+                if (newCoefficients.Length != filterOrder + 1)
+                {
+                    throw new InvalidOperationException("Filter function must return filter order plus one coefficients");
+                }
 
                 for (int n = 0; n < filterOrder + 1; n++)
                 {

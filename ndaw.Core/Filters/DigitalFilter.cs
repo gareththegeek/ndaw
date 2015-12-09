@@ -3,7 +3,7 @@ using System;
 
 namespace ndaw.Core.Filters
 {
-    public class DigitalFilter
+    public class DigitalFilter: IDigitalFilter
     {
         private float lowerCutoffFrequency;
         public float LowerCutOffFrequency

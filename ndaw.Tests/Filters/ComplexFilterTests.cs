@@ -5,17 +5,38 @@ using NSubstitute;
 using ndaw.Core.Filters.WindowFunctions;
 using ndaw.Core.Filters.Implementations;
 using NAudio.Wave;
+using ndaw.Core.Filters.FilterFunctions;
 
 namespace ndaw.Core.Tests.Filters
 {
     [TestClass]
     public class ComplexFilterTests
     {
+        private ComplexFilter target;
+
+        private WaveFormat format;
+        private IWindowFunction windowFunction;
+        private IFilterImplementation implementation;
+
+        [TestInitialize]
+        public void TestInitialise()
+        {
+            format = new WaveFormat(44100, 2);
+            windowFunction = Substitute.For<IWindowFunction>();
+            implementation = Substitute.For<IFilterImplementation>();
+
+            windowFunction
+                .CalculateCoefficients(Arg.Any<int>())
+                .Returns(new float[21]);
+
+            target = new ComplexFilter(format, windowFunction, implementation);
+        }
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Should_throw_if_no_format_specified()
         {
-            var target = new ComplexFilter(
+            target = new ComplexFilter(
                 null,
                 Substitute.For<IWindowFunction>(),
                 Substitute.For<IFilterImplementation>());
@@ -25,7 +46,7 @@ namespace ndaw.Core.Tests.Filters
         [ExpectedException(typeof(ArgumentNullException))]
         public void Should_throw_if_no_window_function_specified()
         {
-            var target = new ComplexFilter(
+            target = new ComplexFilter(
                 new WaveFormat(),
                 null,
                 Substitute.For<IFilterImplementation>());
@@ -35,7 +56,7 @@ namespace ndaw.Core.Tests.Filters
         [ExpectedException(typeof(ArgumentNullException))]
         public void Should_throw_if_no_implementation_specified()
         {
-            var target = new ComplexFilter(
+            target = new ComplexFilter(
                 new WaveFormat(),
                 Substitute.For<IWindowFunction>(),
                 null);
@@ -44,9 +65,6 @@ namespace ndaw.Core.Tests.Filters
         [TestMethod]
         public void Should_apply_window_function_to_coefficients_on_instantiation()
         {
-            var windowFunction = Substitute.For<IWindowFunction>();
-            var implementation = Substitute.For<IFilterImplementation>();
-
             var expected = new[] 
             { 
                 1f, 2f, 3f, 4f, 5f,
@@ -58,7 +76,7 @@ namespace ndaw.Core.Tests.Filters
 
             windowFunction.CalculateCoefficients(Arg.Is<int>(20)).Returns(expected);
 
-            var target = new ComplexFilter(new WaveFormat(), windowFunction, implementation);
+            target = new ComplexFilter(new WaveFormat(), windowFunction, implementation);
 
             CollectionAssert.AreEqual(expected, implementation.Coefficients);
         }
@@ -67,7 +85,6 @@ namespace ndaw.Core.Tests.Filters
         [ExpectedException(typeof(InvalidOperationException))]
         public void Should_throw_if_window_function_returns_the_wrong_number_of_coefficients()
         {
-            var windowFunction = Substitute.For<IWindowFunction>();
             windowFunction.CalculateCoefficients(Arg.Any<int>())
                 .Returns(new float[] { });
 
@@ -81,15 +98,6 @@ namespace ndaw.Core.Tests.Filters
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Should_throw_if_negative_filter_order_specified()
         {
-            var windowFunction = Substitute.For<IWindowFunction>();
-            windowFunction.CalculateCoefficients(Arg.Any<int>())
-                .Returns(new float[21]);
-
-            var target = new ComplexFilter(
-                new WaveFormat(),
-                windowFunction,
-                Substitute.For<IFilterImplementation>());
-
             target.FilterOrder = -1;
         }
 
@@ -97,32 +105,12 @@ namespace ndaw.Core.Tests.Filters
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Should_throw_if_odd_filter_order_specified()
         {
-            var windowFunction = Substitute.For<IWindowFunction>();
-            windowFunction.CalculateCoefficients(Arg.Any<int>())
-                .Returns(new float[21]);
-
-            var target = new ComplexFilter(
-                new WaveFormat(),
-                windowFunction,
-                Substitute.For<IFilterImplementation>());
-
             target.FilterOrder = 3;
         }
 
         [TestMethod]
         public void Should_update_implementation_coefficients_when_filter_order_modified()
         {
-            var windowFunction = Substitute.For<IWindowFunction>();
-            windowFunction.CalculateCoefficients(Arg.Any<int>())
-                .Returns(new float[21]);
-
-            var implementation = Substitute.For<IFilterImplementation>();
-
-            var target = new ComplexFilter(
-                new WaveFormat(),
-                windowFunction,
-                implementation);
-
             var expected = new float[] { 1f, 2f, 3f, 4f, 5f };
 
             windowFunction.CalculateCoefficients(Arg.Any<int>())
@@ -137,32 +125,12 @@ namespace ndaw.Core.Tests.Filters
         [ExpectedException(typeof(ArgumentNullException))]
         public void Should_throw_if_window_function_set_to_null()
         {
-            var windowFunction = Substitute.For<IWindowFunction>();
-            windowFunction.CalculateCoefficients(Arg.Any<int>())
-                .Returns(new float[21]);
-
-            var target = new ComplexFilter(
-                new WaveFormat(),
-                windowFunction,
-                Substitute.For<IFilterImplementation>());
-
             target.WindowFunction = null;
         }
 
         [TestMethod]
         public void Should_update_implementation_coefficients_when_window_function_modified()
         {
-            var windowFunction = Substitute.For<IWindowFunction>();
-            windowFunction.CalculateCoefficients(Arg.Any<int>())
-                .Returns(new float[21]);
-
-            var implementation = Substitute.For<IFilterImplementation>();
-
-            var target = new ComplexFilter(
-                new WaveFormat(),
-                windowFunction,
-                implementation);
-
             var expected = new float[]
             {
                 1f, 1f, 1f, 1f, 1f,
@@ -181,6 +149,115 @@ namespace ndaw.Core.Tests.Filters
             CollectionAssert.AreEqual(expected, implementation.Coefficients);
         }
 
+        [TestMethod]
+        public void Should_correctly_store_state()
+        {
+            windowFunction.CalculateCoefficients(Arg.Any<int>())
+                .Returns(new float[5]);
 
+            var expectedFunction = Substitute.For<IWindowFunction>();
+            expectedFunction.CalculateCoefficients(Arg.Any<int>())
+                .Returns(new float[5]);
+
+            target.FilterOrder = 4;
+            target.WindowFunction = expectedFunction;
+
+            Assert.AreEqual(4, target.FilterOrder);
+            Assert.AreEqual(expectedFunction, target.WindowFunction);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Should_throw_if_filter_returns_incorrect_number_of_coefficients()
+        {
+            var filter = Substitute.For<IDigitalFilter>();
+            filter
+                .CalculateCoefficients(Arg.Any<int>(), Arg.Any<int>())
+                .Returns(new float[7]);
+
+            target.Filters.Add(filter);
+        }
+
+        [TestMethod]
+        public void Should_update_implementation_coefficients_when_filter_collection_changes()
+        {
+            var windowFunctionCoefficients = new[] 
+            {
+                1f, 2f, 3f, 4f, 5f,
+                1f, 2f, 3f, 4f, 5f,
+                1f, 2f, 3f, 4f, 5f,
+                1f, 2f, 3f, 4f, 5f,
+                1f
+            };
+
+            var filterFunctionCoefficients = new[]
+            {
+                7f, 5f, 2f, 7f, 5f,
+                2f, 7f, 5f, 2f, 7f,
+                5f, 2f, 7f, 5f, 2f,
+                7f, 5f, 2f, 7f, 5f,
+                2f
+            };
+
+            var expected = new[]
+            {
+                // Product of filter and window functions
+                7f, 10f, 6f, 28f, 25f,
+                2f, 14f, 15f, 8f, 35f,
+                5f, 4f, 21f, 20f, 10f,
+                7f, 10f, 6f, 28f, 25f,
+                2f
+            };
+
+            windowFunction.CalculateCoefficients(Arg.Any<int>())
+                .Returns(windowFunctionCoefficients);
+
+            var filter = Substitute.For<IDigitalFilter>();
+            filter
+                .CalculateCoefficients(Arg.Is<int>(20), Arg.Is<int>(44100))
+                .Returns(filterFunctionCoefficients);
+
+            target = new ComplexFilter(
+                new WaveFormat(44100, 2),
+                windowFunction,
+                implementation);
+
+            target.Filters.Add(filter);
+
+            CollectionAssert.AreEqual(expected, implementation.Coefficients);
+        }
+
+        [TestMethod]
+        public void Should_multiply_coefficients_from_all_filters_together()
+        {
+            windowFunction.CalculateCoefficients(Arg.Any<int>())
+                .Returns(new[] { 1f, 1f, 1f });
+
+            var filter1 = Substitute.For<IDigitalFilter>();
+            var filter2 = Substitute.For<IDigitalFilter>();
+            var filter3 = Substitute.For<IDigitalFilter>();
+
+            filter1.CalculateCoefficients(Arg.Any<int>(), Arg.Any<int>())
+                .Returns(new[] { 2f, 3f, 4f });
+
+            filter2.CalculateCoefficients(Arg.Any<int>(), Arg.Any<int>())
+                .Returns(new[] { 3f, 5f, 7f });
+
+            filter3.CalculateCoefficients(Arg.Any<int>(), Arg.Any<int>())
+                .Returns(new[] { 3f, 4f, 5f });
+
+            var expected = new[]
+            {
+                18f, 60f, 140f
+            };
+
+            target.FilterOrder = 2;
+
+            target.Filters.Add(filter1);
+            target.Filters.Add(filter2);
+            target.Filters.Add(filter3);
+
+            CollectionAssert.AreEqual(expected, implementation.Coefficients);
+        }
     }
 }
