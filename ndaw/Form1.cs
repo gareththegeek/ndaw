@@ -145,7 +145,7 @@ namespace ndaw
 
             filterNode = new MonoSignalNode(monoFormat, filter.FilterImplementation);
 
-            fourier = new FourierTransform(2048);
+            fourier = new FourierTransform(new FastFourierTransformProvider(), 2048);
             fourierNode = new MonoSignalNode(monoFormat, fourier);
             fourier.DataReady += fourierControl.fourier_DataReady;
 
@@ -187,7 +187,7 @@ namespace ndaw
             stereoFilterNode.LeftIn.Source = sineWaveNode.LeftOut;
             stereoFilterNode.RightIn.Source = sineWaveNode.RightOut;
 
-            fourier = new FourierTransform(2048);
+            fourier = new FourierTransform(new FastFourierTransformProvider(), 2048);
             fourierNode = new MonoSignalNode(stereoFormat, fourier);
             fourier.DataReady += fourierControl.fourier_DataReady;
 

@@ -2,13 +2,16 @@
 using NAudio.Wave;
 using ndaw.Core.Routing;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace ndaw.Core.Fourier
 {
     public class FourierTransform : ISignalProcess
     {
-        public string Name { get { return "Fourier Transform"; } set { } }
+        private readonly IFastFourierTransformProvider transformProvider;
+
+        public string Name { get { return "Fourier Transform"; } [ExcludeFromCodeCoverage]set { } }
 
         private class ChannelData
         {
@@ -47,13 +50,18 @@ namespace ndaw.Core.Fourier
         
         public event EventHandler<FourierTransformEventArgs> DataReady;
 
-        public FourierTransform(int transformLength)
+        public FourierTransform(IFastFourierTransformProvider transformProvider, int transformLength)
         {
             if (!IsPowerOfTwo(transformLength))
             {
                 throw new ArgumentException("Transform length must be a power of two", "transformLength");
             }
+            if (transformProvider == null)
+            {
+                throw new ArgumentNullException("transformProvider", "Transform provider cannot be null");
+            }
             
+            this.transformProvider = transformProvider;
             this.transformLength = transformLength;
             this.m = (int)Math.Log(transformLength, 2d);
         }
@@ -112,12 +120,12 @@ namespace ndaw.Core.Fourier
                 channel.Complex[i] = new Complex
                 {
                     X = (float)(channel.InputHistory[i] 
-                        * FastFourierTransform.BlackmannHarrisWindow(i, transformLength)),
+                        * transformProvider.BlackmannHarrisWindow(i, transformLength)),
                     Y = 0f
                 };
             }
 
-            FastFourierTransform.FFT(true, m, channel.Complex);
+            transformProvider.FFT(true, m, channel.Complex);
 
             var e = new FourierTransformEventArgs
             {

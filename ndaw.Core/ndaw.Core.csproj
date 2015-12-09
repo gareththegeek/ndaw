@@ -57,6 +57,8 @@
     <Compile Include="Filters\FilterFunctions\IFilterFunction.cs" />
     <Compile Include="Filters\FilterFunctions\LowPassFilterFunction.cs" />
     <Compile Include="Filters\IDigitalFilter.cs" />
+    <Compile Include="Fourier\FastFourierTransformProvider.cs" />
+    <Compile Include="Fourier\IFastFourierTransformProvider.cs" />
     <Compile Include="Filters\Implementations\FirFilter.cs" />
     <Compile Include="Filters\Implementations\IFilterImplementation.cs" />
     <Compile Include="Filters\WindowFunctions\BlackmanHarrisWindowFunction.cs" />
@@ -64,7 +66,7 @@
     <Compile Include="Filters\WindowFunctions\HammingWindowFunction.cs" />
     <Compile Include="Filters\WindowFunctions\IWindowFunction.cs" />
     <Compile Include="Filters\WindowFunctions\RectangularWindowFunction.cs" />
-    <Compile Include="Fourier\FastFourierTransform.cs" />
+    <Compile Include="Fourier\FourierTransform.cs" />
     <Compile Include="Fourier\FourierTransformEventArgs.cs" />
     <Compile Include="Oscillators\IOscillator.cs" />
     <Compile Include="Oscillators\SineWave.cs" />

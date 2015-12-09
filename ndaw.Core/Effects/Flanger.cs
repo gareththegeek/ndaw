@@ -3,6 +3,7 @@ using NAudio.Wave;
 using ndaw.Core.Oscillators;
 using ndaw.Core.Routing;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace ndaw.Core.Effects
@@ -15,7 +16,7 @@ namespace ndaw.Core.Effects
 
         // Note that current sample is always overwritten instead of being aggregated in a normal delay unit
 
-        public string Name { get { return "Flanger"; } set { } }
+        public string Name { get { return "Flanger"; } [ExcludeFromCodeCoverage]set { } }
 
         private class ChannelData
         {
