@@ -259,5 +259,35 @@ namespace ndaw.Core.Tests.Filters
 
             CollectionAssert.AreEqual(expected, implementation.Coefficients);
         }
+
+        [TestMethod]
+        public void Should_update_implementation_coefficients_when_filter_changed_event_fires()
+        {
+            windowFunction.CalculateCoefficients(Arg.Any<int>())
+                .Returns(new []
+                {
+                    1f, 1f, 1f, 1f, 1f
+                });
+
+            var expected = new []
+            {
+                1f, 2f, 3f, 4f, 5f
+            };
+
+            var filter = Substitute.For<IDigitalFilter>();
+            filter.CalculateCoefficients(Arg.Any<int>(), Arg.Any<int>())
+                .Returns(new float[5]);
+
+            target.FilterOrder = 4;
+
+            target.Filters.Add(filter);
+
+            filter.CalculateCoefficients(Arg.Any<int>(), Arg.Any<int>())
+                .Returns(expected);
+
+            filter.Changed += Raise.EventWith(filter, new EventArgs());
+
+            CollectionAssert.AreEqual(expected, implementation.Coefficients);
+        }
     }
 }

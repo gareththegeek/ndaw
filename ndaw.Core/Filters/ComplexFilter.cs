@@ -91,6 +91,17 @@ namespace ndaw.Core.Filters
 
         private void filters_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            foreach (var filter in filters)
+            {
+                filter.Changed -= filter_Changed;
+                filter.Changed += filter_Changed;
+            }
+
+            updateCoefficients();
+        }
+
+        private void filter_Changed(object sender, EventArgs e)
+        {
             updateCoefficients();
         }
 

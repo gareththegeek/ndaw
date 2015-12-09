@@ -5,6 +5,8 @@ namespace ndaw.Core.Filters
 {
     public class DigitalFilter: IDigitalFilter
     {
+        public event EventHandler<EventArgs> Changed;
+
         private float lowerCutoffFrequency;
         public float LowerCutOffFrequency
         {
@@ -17,6 +19,10 @@ namespace ndaw.Core.Filters
                 }
 
                 lowerCutoffFrequency = value;
+                if (Changed != null)
+                {
+                    Changed.Invoke(this, new EventArgs());
+                }
             }
         }
 
@@ -32,6 +38,10 @@ namespace ndaw.Core.Filters
                 }
 
                 upperCutoffFrequency = value;
+                if (Changed != null)
+                {
+                    Changed.Invoke(this, new EventArgs());
+                }
             }
         }
 

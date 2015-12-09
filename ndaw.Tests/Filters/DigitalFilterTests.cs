@@ -112,5 +112,31 @@ namespace ndaw.Core.Tests.Filters
 
             CollectionAssert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void Should_raise_changed_event_when_lower_cutoff_frequency_changed()
+        {
+            var changed = false;
+
+            var target = new DigitalFilter();
+            target.Changed += (o, e) => { changed = true; };
+
+            target.LowerCutOffFrequency = 7f;
+
+            Assert.IsTrue(changed);
+        }
+
+        [TestMethod]
+        public void Should_raise_changed_event_when_upper_cutoff_frequency_changed()
+        {
+            var changed = false;
+
+            var target = new DigitalFilter();
+            target.Changed += (o, e) => { changed = true; };
+
+            target.UpperCutOffFrequency = 7f;
+
+            Assert.IsTrue(changed);
+        }
     }
 }
