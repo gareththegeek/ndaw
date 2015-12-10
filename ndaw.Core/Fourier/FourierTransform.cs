@@ -115,6 +115,7 @@ namespace ndaw.Core.Fourier
 
         private void calculateTransform(ChannelData channel)
         {
+            //TODO call ndaw window function once and store all coefficients in buffer rather than calling NAudio window function per iteration
             for (int i = 0; i < transformLength; i++)
             {
                 channel.Complex[i] = new Complex

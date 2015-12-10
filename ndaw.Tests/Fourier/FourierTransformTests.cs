@@ -238,6 +238,35 @@ namespace ndaw.Core.Tests.Fourier
                     && x[3].X == 32f));
         }
 
-        //TODO test multiple channels
+        [TestMethod]
+        public void Should_correctly_process_multiple_channels()
+        {
+            var buffers = new float[][] { new float[4], new float[4] };
+
+            var expected = new float[]
+            {
+                5f, 6f, 7f, 8f
+            };
+
+            transformProvider.FFT(Arg.Any<bool>(), Arg.Any<int>(), Arg.Do<Complex[]>(x =>
+            {
+                x[0] = new Complex { X = expected[0], Y = 0f };
+                x[1] = new Complex { X = expected[1], Y = 0f };
+                x[2] = new Complex { X = expected[2], Y = 0f };
+                x[3] = new Complex { X = expected[3], Y = 0f };
+            }));
+
+            target = new FourierTransform(transformProvider, 4);
+
+            float[][] actual = new float[2][];
+            target.DataReady += (s, e) => actual[e.Channel] = e.Real;
+
+            target.Format = new WaveFormat(44100, 2);
+
+            target.Process(buffers, 4);
+
+            CollectionAssert.AreEqual(expected, actual[0], new FloatComparer());
+            CollectionAssert.AreEqual(expected, actual[1], new FloatComparer());
+        }
     }
 }
