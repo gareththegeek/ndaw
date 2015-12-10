@@ -38,8 +38,8 @@ namespace ndaw.Core.Tests.Filters
             target.UpperCutOffFrequency = 2f;
             target.FilterFunction = expectedFilterFunction;
 
-            Assert.AreEqual(1f, target.LowerCutOffFrequency);
-            Assert.AreEqual(2f, target.UpperCutOffFrequency);
+            Assert.AreEqual(1f, target.LowerCutOffFrequency, FloatComparer.Epsilon);
+            Assert.AreEqual(2f, target.UpperCutOffFrequency, FloatComparer.Epsilon);
             Assert.AreEqual(expectedFilterFunction, target.FilterFunction);
         }
 
@@ -110,7 +110,7 @@ namespace ndaw.Core.Tests.Filters
 
             var actual = target.CalculateCoefficients(1, 3);
 
-            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected, actual, new FloatComparer());
         }
 
         [TestMethod]

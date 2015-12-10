@@ -102,10 +102,10 @@ namespace ndaw.Core.Tests.Implementations
 
             Assert.AreEqual(1, input.Length);
             Assert.AreEqual(4, input[0].Length);
-            Assert.AreEqual(3f, input[0][0]);
-            Assert.AreEqual(6f, input[0][1]);
-            Assert.AreEqual(9f, input[0][2]);
-            Assert.AreEqual(12f, input[0][3]);
+            Assert.AreEqual(3f, input[0][0], FloatComparer.Epsilon);
+            Assert.AreEqual(6f, input[0][1], FloatComparer.Epsilon);
+            Assert.AreEqual(9f, input[0][2], FloatComparer.Epsilon);
+            Assert.AreEqual(12f, input[0][3], FloatComparer.Epsilon);
         }
 
         [TestMethod]
@@ -118,10 +118,10 @@ namespace ndaw.Core.Tests.Implementations
 
             Assert.AreEqual(1, buffer.Length);
             Assert.AreEqual(4, buffer[0].Length);
-            Assert.AreEqual(0.3f * 5f, buffer[0][0], 0.00001);
-            Assert.AreEqual(0.3f * 7f + 0.2f * 5f, buffer[0][1], 0.00001);
-            Assert.AreEqual(0.3f * 11f + 0.2f * 7f + 0.1f * 5f, buffer[0][2], 0.00001);
-            Assert.AreEqual(0.3f * 13f + 0.2f * 11f + 0.1f * 7f, buffer[0][3], 0.00001);
+            Assert.AreEqual(0.3f * 5f, buffer[0][0], FloatComparer.Epsilon);
+            Assert.AreEqual(0.3f * 7f + 0.2f * 5f, buffer[0][1], FloatComparer.Epsilon);
+            Assert.AreEqual(0.3f * 11f + 0.2f * 7f + 0.1f * 5f, buffer[0][2], FloatComparer.Epsilon);
+            Assert.AreEqual(0.3f * 13f + 0.2f * 11f + 0.1f * 7f, buffer[0][3], FloatComparer.Epsilon);
         }
 
         [TestMethod]
@@ -137,7 +137,7 @@ namespace ndaw.Core.Tests.Implementations
 
             Assert.AreEqual(1, buffer.Length);
             Assert.AreEqual(1, buffer[0].Length);
-            Assert.AreEqual(2f + 0.5f * 1f, buffer[0][0], 0.0001);
+            Assert.AreEqual(2f + 0.5f * 1f, buffer[0][0], FloatComparer.Epsilon);
         }
 
         [TestMethod]
@@ -160,11 +160,11 @@ namespace ndaw.Core.Tests.Implementations
             Assert.AreEqual(2, buffers[0].Length);
             Assert.AreEqual(2, buffers[1].Length);
 
-            Assert.AreEqual(0.3f * 5f, buffers[0][0], 0.00001);
-            Assert.AreEqual(0.3f * 11f + 0.2f * 5f, buffers[0][1], 0.00001);
+            Assert.AreEqual(0.3f * 5f, buffers[0][0], FloatComparer.Epsilon);
+            Assert.AreEqual(0.3f * 11f + 0.2f * 5f, buffers[0][1], FloatComparer.Epsilon);
 
-            Assert.AreEqual(0.3f * 7f, buffers[1][0], 0.00001);
-            Assert.AreEqual(0.3f * 13f + 0.2f * 7f, buffers[1][1], 0.00001);
+            Assert.AreEqual(0.3f * 7f, buffers[1][0], FloatComparer.Epsilon);
+            Assert.AreEqual(0.3f * 13f + 0.2f * 7f, buffers[1][1], FloatComparer.Epsilon);
         }
 
         [TestMethod]
@@ -190,10 +190,10 @@ namespace ndaw.Core.Tests.Implementations
             };
             target.Process(buffers, 2);
 
-            Assert.AreEqual(5f + 0.5f * 3f, buffers[0][0], 0.0001);
-            Assert.AreEqual(7f + 0.5f * 5f, buffers[0][1], 0.0001);
-            Assert.AreEqual(6f + 0.5f * 4f, buffers[1][0], 0.0001);
-            Assert.AreEqual(8f + 0.5f * 6f, buffers[1][1], 0.0001);
+            Assert.AreEqual(5f + 0.5f * 3f, buffers[0][0], FloatComparer.Epsilon);
+            Assert.AreEqual(7f + 0.5f * 5f, buffers[0][1], FloatComparer.Epsilon);
+            Assert.AreEqual(6f + 0.5f * 4f, buffers[1][0], FloatComparer.Epsilon);
+            Assert.AreEqual(8f + 0.5f * 6f, buffers[1][1], FloatComparer.Epsilon);
         }
 
         [TestMethod]

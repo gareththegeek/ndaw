@@ -68,6 +68,9 @@
     <Compile Include="Filters\WindowFunctions\BlackmanWindowFunctionTests.cs" />
     <Compile Include="Filters\WindowFunctions\BlackmanHarrisWindowFunctionTests.cs" />
     <Compile Include="Fourier\FourierTransformTests.cs" />
+    <Compile Include="FloatComparer.cs" />
+    <Compile Include="Oscillators\SineWaveTests.cs" />
+    <Compile Include="Oscillators\SquareWaveTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Effects\FlangerTests.cs" />
     <Compile Include="Filters\FilterFunctions\BandPassFilterFunctionTests.cs" />

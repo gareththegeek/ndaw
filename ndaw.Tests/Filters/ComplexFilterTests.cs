@@ -78,7 +78,7 @@ namespace ndaw.Core.Tests.Filters
 
             target = new ComplexFilter(new WaveFormat(), windowFunction, implementation);
 
-            CollectionAssert.AreEqual(expected, implementation.Coefficients);
+            CollectionAssert.AreEqual(expected, implementation.Coefficients, new FloatComparer());
         }
 
         [TestMethod]
@@ -118,7 +118,7 @@ namespace ndaw.Core.Tests.Filters
 
             target.FilterOrder = 4;
 
-            CollectionAssert.AreEqual(expected, implementation.Coefficients);
+            CollectionAssert.AreEqual(expected, implementation.Coefficients, new FloatComparer());
         }
 
         [TestMethod]
@@ -146,7 +146,7 @@ namespace ndaw.Core.Tests.Filters
 
             target.WindowFunction = newWindowFunction;
 
-            CollectionAssert.AreEqual(expected, implementation.Coefficients);
+            CollectionAssert.AreEqual(expected, implementation.Coefficients, new FloatComparer());
         }
 
         [TestMethod]
@@ -224,7 +224,7 @@ namespace ndaw.Core.Tests.Filters
 
             target.Filters.Add(filter);
 
-            CollectionAssert.AreEqual(expected, implementation.Coefficients);
+            CollectionAssert.AreEqual(expected, implementation.Coefficients, new FloatComparer());
         }
 
         [TestMethod]
@@ -257,7 +257,7 @@ namespace ndaw.Core.Tests.Filters
             target.Filters.Add(filter2);
             target.Filters.Add(filter3);
 
-            CollectionAssert.AreEqual(expected, implementation.Coefficients);
+            CollectionAssert.AreEqual(expected, implementation.Coefficients, new FloatComparer());
         }
 
         [TestMethod]
@@ -287,7 +287,7 @@ namespace ndaw.Core.Tests.Filters
 
             filter.Changed += Raise.EventWith(filter, new EventArgs());
 
-            CollectionAssert.AreEqual(expected, implementation.Coefficients);
+            CollectionAssert.AreEqual(expected, implementation.Coefficients, new FloatComparer());
         }
     }
 }

@@ -37,7 +37,7 @@ namespace ndaw.Core.Effects
                 }
 
                 depth = value;
-                lfo.Amplitude = depth;//TEST
+                lfo.Amplitude = depth;
             }
         }
 
@@ -173,10 +173,10 @@ namespace ndaw.Core.Effects
 
         private void processChannel(ChannelData channel, float[] buffer, int count)
         {
+            //TODO unsafe implementation
+
             for (int i = 0; i < count; i++)
             {
-                //TODO Math.Sin could be speeded up using lookup table?
-
                 var sample = buffer[i];
                 channel.DelayBuffer[channel.Position] = sample;
 

@@ -1,12 +1,13 @@
 ﻿using NAudio.Wave;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace ndaw.Core.Oscillators
 {
     public class SineWave : IOscillator
     {
-        public string Name { get { return "Sine Wave"; } set { } }
+        public string Name { get { return "Sine Wave"; } [ExcludeFromCodeCoverage]set { } }
 
         private float frequencyInSamples;
         private float frequency;
@@ -51,7 +52,11 @@ namespace ndaw.Core.Oscillators
             set
             {
                 format = value;
-                frequencyInSamples = format.SampleRate / frequency;
+
+                if (value != null)
+                {
+                    frequencyInSamples = format.SampleRate / frequency;
+                }
             }
         }
 

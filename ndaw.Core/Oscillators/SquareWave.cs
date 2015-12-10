@@ -1,12 +1,13 @@
 ﻿using NAudio.Wave;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace ndaw.Core.Oscillators
 {
     public class SquareWave : IOscillator
     {
-        public string Name { get { return "Square Wave"; } set { } }
+        public string Name { get { return "Square Wave"; } [ExcludeFromCodeCoverage]set { } }
 
         private float halfFrequencyInSamples;
         private float frequency;
@@ -50,7 +51,11 @@ namespace ndaw.Core.Oscillators
             set 
             {
                 format = value;
-                halfFrequencyInSamples = (format.SampleRate / frequency) / 2f;
+
+                if (format != null)
+                {
+                    halfFrequencyInSamples = (format.SampleRate / frequency) / 2f;
+                }
             }
         }
 
@@ -101,7 +106,7 @@ namespace ndaw.Core.Oscillators
 
         public float Generate(int time)
         {
-            return ((time / halfFrequencyInSamples) % 2f) * amplitude;
+            return (2f * (float)((int)(time / halfFrequencyInSamples) % 2) - 1f) * amplitude;
         }
     }
 }

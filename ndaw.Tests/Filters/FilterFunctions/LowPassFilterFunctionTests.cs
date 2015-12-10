@@ -64,7 +64,7 @@ namespace ndaw.Core.Tests.FilterFunctions
 
             var actual = target.CalculateCoefficients(10, 100f, 0f, 44100);
 
-            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected, actual, new FloatComparer());
         }
 
         [TestMethod]
@@ -90,7 +90,7 @@ namespace ndaw.Core.Tests.FilterFunctions
 
             var actual = target.CalculateCoefficients(11, 100f, 0f, 44100);
 
-            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected, actual, new FloatComparer());
         }
     }
 }

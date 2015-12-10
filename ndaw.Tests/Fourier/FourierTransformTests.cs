@@ -207,7 +207,7 @@ namespace ndaw.Core.Tests.Fourier
 
             target.Process(buffers, 4);
 
-            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected, actual, new FloatComparer());
         }
 
         [TestMethod]
@@ -237,5 +237,7 @@ namespace ndaw.Core.Tests.Fourier
                     && x[2].X == 21f
                     && x[3].X == 32f));
         }
+
+        //TODO test multiple channels
     }
 }

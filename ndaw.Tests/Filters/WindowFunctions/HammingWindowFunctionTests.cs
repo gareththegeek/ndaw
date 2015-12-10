@@ -38,7 +38,7 @@ namespace ndaw.Core.Tests.Filters.WindowFunctions
 
             var actual = target.CalculateCoefficients(10);
 
-            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected, actual, new FloatComparer());
         }
     }
 }

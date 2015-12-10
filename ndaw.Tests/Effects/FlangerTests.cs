@@ -41,7 +41,7 @@ namespace ndaw.Core.Tests.Effects
         {
             target.Depth = 0.4f;
 
-            Assert.AreEqual(0.4f, lfo.Amplitude);
+            Assert.AreEqual(0.4f, lfo.Amplitude, FloatComparer.Epsilon);
         }
 
         [TestMethod]
@@ -70,7 +70,7 @@ namespace ndaw.Core.Tests.Effects
         {
             target.Frequency = 123f;
 
-            Assert.AreEqual(123f, lfo.Frequency);
+            Assert.AreEqual(123f, lfo.Frequency, FloatComparer.Epsilon);
         }
 
         [TestMethod]
@@ -160,11 +160,11 @@ namespace ndaw.Core.Tests.Effects
             target.Process(new float[][] { signal }, signal.Length);
             target.Process(new float[][] { signal }, signal.Length);
 
-            Assert.AreEqual(1f, signal[0]);
-            Assert.AreEqual(2f, signal[1]);
-            Assert.AreEqual(3f, signal[2]);
-            Assert.AreEqual(4f, signal[3]);
-            Assert.AreEqual(5f, signal[4]);
+            Assert.AreEqual(1f, signal[0], FloatComparer.Epsilon);
+            Assert.AreEqual(2f, signal[1], FloatComparer.Epsilon);
+            Assert.AreEqual(3f, signal[2], FloatComparer.Epsilon);
+            Assert.AreEqual(4f, signal[3], FloatComparer.Epsilon);
+            Assert.AreEqual(5f, signal[4], FloatComparer.Epsilon);
         }
 
         [TestMethod]
@@ -182,23 +182,23 @@ namespace ndaw.Core.Tests.Effects
             target.Process(new float[][] { signal0, signal1, signal2 }, 5);
             target.Process(new float[][] { signal0, signal1, signal2 }, 5);
 
-            Assert.AreEqual(1f, signal0[0]);
-            Assert.AreEqual(2f, signal0[1]);
-            Assert.AreEqual(3f, signal0[2]);
-            Assert.AreEqual(4f, signal0[3]);
-            Assert.AreEqual(5f, signal0[4]);
+            Assert.AreEqual(1f, signal0[0], FloatComparer.Epsilon);
+            Assert.AreEqual(2f, signal0[1], FloatComparer.Epsilon);
+            Assert.AreEqual(3f, signal0[2], FloatComparer.Epsilon);
+            Assert.AreEqual(4f, signal0[3], FloatComparer.Epsilon);
+            Assert.AreEqual(5f, signal0[4], FloatComparer.Epsilon);
 
-            Assert.AreEqual(6f, signal1[0]);
-            Assert.AreEqual(7f, signal1[1]);
-            Assert.AreEqual(8f, signal1[2]);
-            Assert.AreEqual(9f, signal1[3]);
-            Assert.AreEqual(10f, signal1[4]);
+            Assert.AreEqual(6f, signal1[0], FloatComparer.Epsilon);
+            Assert.AreEqual(7f, signal1[1], FloatComparer.Epsilon);
+            Assert.AreEqual(8f, signal1[2], FloatComparer.Epsilon);
+            Assert.AreEqual(9f, signal1[3], FloatComparer.Epsilon);
+            Assert.AreEqual(10f, signal1[4], FloatComparer.Epsilon);
 
-            Assert.AreEqual(11f, signal2[0]);
-            Assert.AreEqual(12f, signal2[1]);
-            Assert.AreEqual(13f, signal2[2]);
-            Assert.AreEqual(14f, signal2[3]);
-            Assert.AreEqual(15f, signal2[4]);
+            Assert.AreEqual(11f, signal2[0], FloatComparer.Epsilon);
+            Assert.AreEqual(12f, signal2[1], FloatComparer.Epsilon);
+            Assert.AreEqual(13f, signal2[2], FloatComparer.Epsilon);
+            Assert.AreEqual(14f, signal2[3], FloatComparer.Epsilon);
+            Assert.AreEqual(15f, signal2[4], FloatComparer.Epsilon);
         }
 
         [TestMethod]
@@ -242,9 +242,9 @@ namespace ndaw.Core.Tests.Effects
 
             target.Process(buffers, 3);
 
-            Assert.AreEqual((4f + 3f) / 2, buffers[0][0], 0.00001f);
-            Assert.AreEqual((5f + 4f) / 2, buffers[0][1], 0.00001f);
-            Assert.AreEqual((6f + 5f) / 2, buffers[0][2], 0.00001f);
+            Assert.AreEqual((4f + 3f) / 2, buffers[0][0], FloatComparer.Epsilon);
+            Assert.AreEqual((5f + 4f) / 2, buffers[0][1], FloatComparer.Epsilon);
+            Assert.AreEqual((6f + 5f) / 2, buffers[0][2], FloatComparer.Epsilon);
         }
 
         [TestMethod]
@@ -263,10 +263,10 @@ namespace ndaw.Core.Tests.Effects
             var expectedFormat = new WaveFormat();
             target.Format = expectedFormat;
 
-            Assert.AreEqual(1f, target.Depth);
-            Assert.AreEqual(0.5f, target.Wet);
-            Assert.AreEqual(100f, target.Frequency);
-            Assert.AreEqual(12f, target.MaximumDelay);
+            Assert.AreEqual(1f, target.Depth, FloatComparer.Epsilon);
+            Assert.AreEqual(0.5f, target.Wet, FloatComparer.Epsilon);
+            Assert.AreEqual(100f, target.Frequency, FloatComparer.Epsilon);
+            Assert.AreEqual(12f, target.MaximumDelay, FloatComparer.Epsilon);
             Assert.AreEqual(expectedFormat, target.Format);
         }
     }
