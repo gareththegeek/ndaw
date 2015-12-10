@@ -237,7 +237,7 @@ namespace ndaw.Graphics.Controls
                     model = new SignalNodeViewModel
                     {
                         Node = node,
-                        //TODO find sensible place to dump nodes
+                        //TODO find sensible place to dump nodes on canvas
                         //TODO generation of models should be delegated to another class
                         X = i,
                         Y = 20,
@@ -433,7 +433,6 @@ namespace ndaw.Graphics.Controls
 
         private void connect(SignalSourceViewModel source, SignalSinkViewModel sink)
         {
-            //TODO check connection doesn't already exist
             sink.Sink.Source = source.Source;
         }
 

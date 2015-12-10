@@ -8,11 +8,7 @@ namespace ndaw.Core.Filters.Implementations
 {
     public class FirFilter: IFilterImplementation
     {
-        //TODO unroll loops for fixed filter lengths (orders)?
-        // e.g. one read implementation for 10 coefficients or fewer, one for 20 or fewer etc.
-
-        // TODO implement coefficient calculator
-        // Kaiser
+        // TODO implement coefficient calculator Kaiser
 
         //TODO reimplement using Matrices and compare performance
 

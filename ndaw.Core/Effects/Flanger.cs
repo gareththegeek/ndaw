@@ -10,12 +10,6 @@ namespace ndaw.Core.Effects
 {
     public class Flanger: ISignalProcess
     {
-        //TODO Flanger appears to be special case of delay unit, with no decay - allow the 
-        // option for delay value to be constant or to be driver by external LFO unit so that
-        // phase and delay effects are same class?
-
-        // Note that current sample is always overwritten instead of being aggregated in a normal delay unit
-
         public string Name { get { return "Flanger"; } [ExcludeFromCodeCoverage]set { } }
 
         private class ChannelData
