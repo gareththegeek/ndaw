@@ -26,6 +26,13 @@ namespace ndaw.Core.Tests.Implementations
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Should_throw_if_coefficients_are_empty()
+        {
+            target.Coefficients = new float[0];
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Should_throw_if_buffer_is_null()
         {
@@ -56,6 +63,14 @@ namespace ndaw.Core.Tests.Implementations
         public void Should_throw_if_coefficients_is_null()
         {
             var buffer = new float[][] { new[] { 1f } };
+            target.Process(buffer, 1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Should_throw_if_coefficients_is_longer_than_count()
+        {
+            var buffer = new float[][] { new[] { 1f, 2f } };
             target.Process(buffer, 1);
         }
 
@@ -129,15 +144,16 @@ namespace ndaw.Core.Tests.Implementations
         {
             target.Coefficients = new[] { 1f, 0.5f };
 
-            var buffer = new float[][] { new[] { 1f } };
-            target.Process(buffer, 1);
+            var buffer = new float[][] { new[] { 1f, 1f } };
+            target.Process(buffer, 2);
 
-            buffer = new float[][] { new[] { 2f } };
-            target.Process(buffer, 1);
+            buffer = new float[][] { new[] { 2f, 2f } };
+            target.Process(buffer, 2);
 
             Assert.AreEqual(1, buffer.Length);
-            Assert.AreEqual(1, buffer[0].Length);
+            Assert.AreEqual(2, buffer[0].Length);
             Assert.AreEqual(2f + 0.5f * 1f, buffer[0][0], FloatComparer.Epsilon);
+            Assert.AreEqual(2f + 0.5f * 2f, buffer[0][1], FloatComparer.Epsilon);
         }
 
         [TestMethod]
@@ -147,7 +163,7 @@ namespace ndaw.Core.Tests.Implementations
             target = new FirFilter();
             target.Format = format;
 
-            target.Coefficients = new[] { 0.3f, 0.2f, 0.1f };
+            target.Coefficients = new[] { 0.2f, 0.1f };
             var buffers = new float[][]
             {
                 new[] { 5f, 11f },
@@ -160,11 +176,11 @@ namespace ndaw.Core.Tests.Implementations
             Assert.AreEqual(2, buffers[0].Length);
             Assert.AreEqual(2, buffers[1].Length);
 
-            Assert.AreEqual(0.3f * 5f, buffers[0][0], FloatComparer.Epsilon);
-            Assert.AreEqual(0.3f * 11f + 0.2f * 5f, buffers[0][1], FloatComparer.Epsilon);
+            Assert.AreEqual(0.2f * 5f, buffers[0][0], FloatComparer.Epsilon);
+            Assert.AreEqual(0.2f * 11f + 0.1f * 5f, buffers[0][1], FloatComparer.Epsilon);
 
-            Assert.AreEqual(0.3f * 7f, buffers[1][0], FloatComparer.Epsilon);
-            Assert.AreEqual(0.3f * 13f + 0.2f * 7f, buffers[1][1], FloatComparer.Epsilon);
+            Assert.AreEqual(0.2f * 7f, buffers[1][0], FloatComparer.Epsilon);
+            Assert.AreEqual(0.2f * 13f + 0.1f * 7f, buffers[1][1], FloatComparer.Epsilon);
         }
 
         [TestMethod]
@@ -209,7 +225,7 @@ namespace ndaw.Core.Tests.Implementations
         {
             target = new FirFilter();
 
-            var expectedCoefficients = new float[] { };
+            var expectedCoefficients = new float[1];
             target.Coefficients = expectedCoefficients;
 
             Assert.AreEqual(expectedCoefficients, target.Coefficients);

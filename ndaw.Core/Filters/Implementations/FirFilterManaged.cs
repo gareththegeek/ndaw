@@ -1,6 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Single;
-using NAudio.Utils;
+﻿using NAudio.Utils;
 using NAudio.Wave;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -8,7 +6,7 @@ using System.Linq;
 
 namespace ndaw.Core.Filters.Implementations
 {
-    public class FirFilter : IFilterImplementation
+    public class FirFilterManaged : IFilterImplementation
     {
         // TODO implement coefficient calculator Kaiser
 
@@ -23,24 +21,17 @@ namespace ndaw.Core.Filters.Implementations
         }
 
         private float[] coefficients;
-        private Matrix<float> C;
-        public float[] Coefficients
+        public float[] Coefficients 
         {
             get { return coefficients; }
             set
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value", "Coefficients cannot be null");
-                }
-                if (value.Length == 0)
-                {
-                    throw new ArgumentOutOfRangeException("value", "Length of coefficients must be greater than zero");
+                    throw new ArgumentNullException("Coefficients cannot be null");
                 }
 
                 coefficients = value;
-
-                C = new DenseMatrix(1, coefficients.Length, coefficients.Reverse().ToArray());
             }
         }
 
@@ -58,14 +49,12 @@ namespace ndaw.Core.Filters.Implementations
                     for (int i = 0; i < format.Channels; i++)
                     {
                         channels[i] = new ChannelData();
-                        //channels[i].InputHistory = new float[0];
+                        channels[i].InputHistory = new float[0];
                     }
                 }
             }
         }
 
-        private float[] matrix;
-        private float[] history;
         private ChannelData[] channels;
 
         public void Process(float[][] buffers, int count)
@@ -95,78 +84,24 @@ namespace ndaw.Core.Filters.Implementations
                 throw new InvalidOperationException("Fir filter requires coefficients to be defined in order to operate");
             }
 
-            if (coefficients.Length > count)
-            {
-                throw new InvalidOperationException("Count must be greater than or equal to coefficient length");
-            }
-
-            //var inputHistoryLength = Math.Max(count, coefficients.Length);
-
+            var inputHistoryLength = Math.Max(count, coefficients.Length);
+            
             for (int i = 0; i < format.Channels; i++)
             {
                 var channel = channels[i];
                 var buffer = buffers[i];
 
-                //if (inputHistoryLength > channel.InputHistory.Length)
-                //{
-                //    channel.InputHistory = BufferHelpers.Ensure(channel.InputHistory, inputHistoryLength);
-                //}
-
-                // Using BlockCopy and Math.Net Numerics Matrix is 12 times faster in testing
-                processMatrix(channel, buffer, count);
+                if (inputHistoryLength > channel.InputHistory.Length)
+                {
+                    channel.InputHistory = BufferHelpers.Ensure(channel.InputHistory, inputHistoryLength);
+                }
+                
                 // Unsafe equivalent was approximately 3 times faster in testing
-                //processUnsafe(channel, buffer, count);
+                processUnsafe(channel, buffer, count);
                 //processSafe(channel, buffer, count);
             }
         }
 
-        private void processMatrix(ChannelData channel, float[] buffer, int count)
-        {
-            var c = coefficients.Length;
-            var src = 1 - c;
-            var dst = 0;
-            var offset = c - 1;
-
-            matrix = BufferHelpers.Ensure(matrix, count * c);
-            history = BufferHelpers.Ensure(history, c);
-            channel.InputHistory = BufferHelpers.Ensure(channel.InputHistory, c);
-
-            Buffer.BlockCopy(channel.InputHistory, 0, history, 0, sizeof(float) * c);
-
-            for (int i = 0; i < count; i++)
-            {
-                Buffer.BlockCopy(
-                    buffer,
-                    sizeof(float) * (src + offset),
-                    matrix,
-                    sizeof(float) * (dst + offset),
-                    sizeof(float) * (c - offset));
-
-                if (offset > 0)
-                {
-                    Buffer.BlockCopy(
-                        history,
-                        sizeof(float) * (c - offset),
-                        matrix,
-                        sizeof(float) * dst,
-                        sizeof(float) * offset);
-
-                    offset -= 1;
-                }
-
-                src += 1;
-                dst += c;
-            }
-
-            Buffer.BlockCopy(buffer, sizeof(float) * (count - c), channel.InputHistory, 0, sizeof(float) * c);
-
-            var X = new DenseMatrix(coefficients.Length, count, matrix);
-
-            var B = new DenseMatrix(1, count, buffer);
-            C.Multiply(X, B);
-        }
-
-        [ExcludeFromCodeCoverage]
         private unsafe void processUnsafe(ChannelData channel, float[] buffer, int count)
         {
             var coefficientsLength = this.coefficients.Length;
@@ -174,8 +109,8 @@ namespace ndaw.Core.Filters.Implementations
             var inputHistoryLength = channel.InputHistory.Length;
             var position = channel.Position;
 
-            fixed (float* fixedBuffer = buffer,
-                fixedInputHistory = channel.InputHistory,
+            fixed (float* fixedBuffer = buffer, 
+                fixedInputHistory = channel.InputHistory, 
                 fixedCoefficients = coefficients)
             {
                 float* pBuffer = fixedBuffer;
