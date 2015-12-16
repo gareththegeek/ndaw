@@ -8,7 +8,7 @@ namespace ndaw.Core.Tests
 {
     public class FloatComparer: System.Collections.IComparer
     {
-        public const float Epsilon = 0.00001f;
+        public const float Epsilon = 0.0001f;
 
         private readonly float epsilon;
 

@@ -11,7 +11,7 @@ namespace ndaw.Core.PerformanceTest
     public class FlangerTests
     {
         [TestMethod]
-        public void PerformanceTest_100000_iterations_1000_length_buffer()
+        public void Flanger_200000_iterations_1000_length_buffer()
         {
             var target = new Flanger(new SineWave());
 
@@ -20,7 +20,7 @@ namespace ndaw.Core.PerformanceTest
             var time = Helpers.Time(() =>
             {
                 var buffer = new float[1000];
-                for (int i = 0; i < 100000; i++)
+                for (int i = 0; i < 200000; i++)
                 {
                     target.Process(new float[][] { buffer }, 1000);
                 }

@@ -17,7 +17,7 @@ namespace ndaw.Core.Tests.Effects
         public void Initialise()
         {
             lfo = Substitute.For<IOscillator>();
-            lfo.Generate(Arg.Any<int>()).Returns(0f);
+            //lfo.Generate(Arg.Any<int>()).Returns(0f);
 
             target = new Flanger(lfo);
         }
@@ -207,20 +207,11 @@ namespace ndaw.Core.Tests.Effects
             target.Format = new WaveFormat(44100, 1);
             var buffers = new float[][] { new[] { 1f, 2f } };
 
-            target.Process(buffers, 2);
-
-            lfo.Received(1).Generate(Arg.Is<int>(0));
-            lfo.Received(1).Generate(Arg.Is<int>(1));
+            lfo.Time = 5;
 
             target.Process(buffers, 2);
 
-            lfo.Received(1).Generate(Arg.Is<int>(2));
-            lfo.Received(1).Generate(Arg.Is<int>(3));
-
-            target.Process(buffers, 2);
-
-            lfo.Received(1).Generate(Arg.Is<int>(4));
-            lfo.Received(1).Generate(Arg.Is<int>(5));
+            Assert.AreEqual(0, lfo.Time);
         }
 
         [TestMethod]
@@ -232,7 +223,13 @@ namespace ndaw.Core.Tests.Effects
             // Set max delay to 2 so that max delay over two equals one
             target.MaximumDelay = 2000;
 
-            lfo.Generate(Arg.Any<int>()).Returns(-2f);
+            //lfo.Generate(Arg.Any<int>()).Returns(-2f);
+            lfo.Process(Arg.Do<float[][]>(b => 
+            {
+                b[0][0] = -2;
+                b[0][1] = -2;
+                b[0][2] = -2;
+            }), Arg.Any<int>());
 
             var buffers = new float[][] { new[] { 1f, 2f, 3f } };
 

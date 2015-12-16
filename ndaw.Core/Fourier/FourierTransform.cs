@@ -136,14 +136,11 @@ namespace ndaw.Core.Fourier
 
             transformProvider.FFT(true, m, channel.Complex);
 
-            var e = new FourierTransformEventArgs
-            {
-                TranformLength = transformLength,
-                Channel = channel.Index,
-                Real = channel.Complex.Select(c => (float)c.X).ToArray(),
-                Imaginary = channel.Complex.Select(c => (float)c.Y).ToArray()
-            };
-
+            var e = new FourierTransformEventArgs(
+                transformLength, 
+                channel.Index, 
+                channel.Complex);
+            
             if (DataReady != null)
             {
                 DataReady.Invoke(this, e);

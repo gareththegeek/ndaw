@@ -9,6 +9,22 @@ namespace ndaw.Core.Oscillators
     {
         public string Name { get { return "Sine Wave"; } [ExcludeFromCodeCoverage]set { } }
 
+        private const float PI2 = (float)(Math.PI * 2D);
+        private const int TableSize = 1024 * 128;
+        private const float TableSizeF = (float)TableSize;
+        private const float Factor = TableSizeF / PI2;
+        private static float[] sineTable;
+
+        static SineWave()
+        {
+            sineTable = new float[TableSize];
+            for (int i = 0; i < TableSize; i++)
+            {
+                float angle = ((float)i / TableSizeF) * PI2;
+                sineTable[i] = (float)Math.Sin(angle);
+            }
+        }
+
         private float frequencyInSamples;
         private float frequency;
         public float Frequency
@@ -60,11 +76,11 @@ namespace ndaw.Core.Oscillators
             }
         }
 
-        private int time;
+        public int Time { get; set; }
 
         public SineWave()
         {
-            this.time = 0;
+            this.Time = 0;
 
             this.Frequency = 200f;
             this.Amplitude = 0.125f;
@@ -92,22 +108,41 @@ namespace ndaw.Core.Oscillators
                 throw new ArgumentOutOfRangeException("count", "Count must be equal to or less than buffer length");
             }
 
-            for (int i = 0; i < count; i++)
-            {
-                var sample = Generate(time);
+            var factor = Factor * PI2 * (1f / frequencyInSamples);
+            var time = this.Time;
 
-                for (int j = 0; j < format.Channels; j++)
+            unsafe
+            {
+                fixed (float* pSineTable = sineTable, fixedBuffer = buffers[0])
                 {
-                    buffers[j][i] = sample;
+                    var pBuffer = fixedBuffer;
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        int index = (int)(time++ * factor);
+                        index %= TableSize;
+                        index = (index >= 0) ? index : TableSize - index;
+
+                        *(pBuffer++) = *(pSineTable + index) * amplitude;
+                    }
                 }
 
-                time++;
+                for (int j = 1; j < format.Channels; j++)
+                {
+                    Buffer.BlockCopy(buffers[0], 0, buffers[j], 0, sizeof(float) * count);
+                }
             }
+
+            this.Time = time;
         }
 
-        public float Generate(int time)
-        {
-            return (float)(amplitude * Math.Sin(2f * Math.PI * (time / frequencyInSamples)));
-        }
+        //public float Generate(int time)
+        //{
+        //    var value = PI2 * (time / frequencyInSamples);
+        //    int index = (int)(value * Factor);
+        //    index %= TableSize;
+        //    index = (index >= 0) ? index : TableSize - index;
+        //    return amplitude * sineTable[index];
+        //}
     }
 }

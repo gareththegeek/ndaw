@@ -26,7 +26,7 @@ namespace ndaw.Graphics.Controls
 
             lock (fourierDataLock)
             {
-                fourierLength = e.TranformLength;
+                fourierLength = e.TransformLength;
                 fourierReal = e.Real;
                 fourierImaginary = e.Imaginary;
             }

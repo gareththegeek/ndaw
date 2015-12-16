@@ -3,12 +3,13 @@ using NAudio.Wave;
 using ndaw.Core.Oscillators;
 using ndaw.Core.Routing;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace ndaw.Core.Effects
 {
-    public class Flanger: ISignalProcess
+    public class Flanger : ISignalProcess
     {
         public string Name { get { return "Flanger"; } [ExcludeFromCodeCoverage]set { } }
 
@@ -16,14 +17,15 @@ namespace ndaw.Core.Effects
         {
             public int Position;
             public float[] DelayBuffer;
+            public float[] LfoBuffer;
             public int Time;
         }
 
         private float depth = 1f;
-        public float Depth 
+        public float Depth
         {
-            get { return depth; } 
-            set 
+            get { return depth; }
+            set
             {
                 if (value < 0f || value > 1f)
                 {
@@ -82,7 +84,7 @@ namespace ndaw.Core.Effects
                 }
 
                 maximumDelay = value;
-                
+
                 if (format != null)
                 {
                     maximumDelaySamples = Utility.MillisecondsToSamples(format.SampleRate, maximumDelay);
@@ -114,6 +116,7 @@ namespace ndaw.Core.Effects
                     {
                         var channel = new ChannelData();
                         channel.DelayBuffer = new float[bufferLength];
+                        channel.LfoBuffer = new float[0];
                         channels[i] = channel;
                     }
 
@@ -161,6 +164,15 @@ namespace ndaw.Core.Effects
 
             for (int i = 0; i < format.Channels; i++)
             {
+                channels[i].LfoBuffer = BufferHelpers.Ensure(channels[i].LfoBuffer, count);
+            }
+
+            var lfoBuffers = channels.Select(c => c.LfoBuffer).ToArray();
+            lfo.Time = channels[0].Time;
+            lfo.Process(lfoBuffers, count);
+
+            for (int i = 0; i < format.Channels; i++)
+            {
                 processChannel(channels[i], buffers[i], count);
             }
         }
@@ -174,9 +186,7 @@ namespace ndaw.Core.Effects
                 var sample = buffer[i];
                 channel.DelayBuffer[channel.Position] = sample;
 
-                int s = channel.Time++;
-
-                var delay = (lfo.Generate(s) + 1f) * (maximumDelaySamples / 2f);
+                var delay = (channel.LfoBuffer[i] + 1f) * (maximumDelaySamples / 2f);
 
                 float delaySample;
 
@@ -192,6 +202,8 @@ namespace ndaw.Core.Effects
                 channel.Position += 1;
                 channel.Position %= bufferLength;
             }
+
+            channel.Time += count;
         }
     }
 }

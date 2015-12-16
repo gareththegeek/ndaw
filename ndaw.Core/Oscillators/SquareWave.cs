@@ -59,11 +59,11 @@ namespace ndaw.Core.Oscillators
             }
         }
 
-        private int time;
+        public int Time { get; set; }
 
         public SquareWave()
         {
-            this.time = 0;
+            this.Time = 0;
 
             this.Frequency = 400f;
             this.Amplitude = 0.125f;
@@ -93,18 +93,18 @@ namespace ndaw.Core.Oscillators
 
             for (int i = 0; i < count; i++)
             {
-                var sample = Generate(time);
+                var sample = Generate(Time);
 
                 for (int j = 0; j < format.Channels; j++)
                 {
                     buffers[j][i] = sample;
                 }
                 
-                time++;
+                Time++;
             }
         }
 
-        public float Generate(int time)
+        private float Generate(int time)
         {
             return (2f * (float)((int)(time / halfFrequencyInSamples) % 2) - 1f) * amplitude;
         }

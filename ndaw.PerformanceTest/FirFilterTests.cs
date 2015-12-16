@@ -9,7 +9,7 @@ namespace ndaw.Core.PerformanceTest
     public class FirFilterTest
     {
         [TestMethod]
-        public void FirFilter_PerformanceTest_100_coefficients_1000_samples_and_50000_iterations()
+        public void FirFilter_100_coefficients_1000_samples_and_50000_iterations()
         {
             var format = new WaveFormat(44100, 1);
             var target = new FirFilter();
@@ -29,7 +29,7 @@ namespace ndaw.Core.PerformanceTest
         }
 
         [TestMethod]
-        public void FirFilter_PerformanceTest_20_coefficients_64_samples_and_1000000_iterations()
+        public void FirFilter_20_coefficients_64_samples_and_1000000_iterations()
         {
             var format = new WaveFormat(44100, 1);
             var target = new FirFilter();

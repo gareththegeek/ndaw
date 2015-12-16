@@ -6,6 +6,7 @@ namespace ndaw.Core.Oscillators
     {
         float Frequency { get; set; }
         float Amplitude { get; set; }
-        float Generate(int time);
+        //float Generate(int time);
+        int Time { get; set; }
     }
 }

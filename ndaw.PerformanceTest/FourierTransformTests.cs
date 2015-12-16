@@ -23,7 +23,7 @@ namespace ndaw.Core.PerformanceTest
         }
 
         [TestMethod]
-        public void FourierTransform_PerformanceTest()
+        public void FourierTransform_16384_length_2000000_iterations()
         {
             var transformProvider = new ProviderFake();
             var windowFunction = new BlackmanHarrisWindowFunction();
@@ -37,7 +37,7 @@ namespace ndaw.Core.PerformanceTest
 
             var buffers = new float[][] { new float[64] };
 
-            for (int i = 0; i < 500000; i++)
+            for (int i = 0; i < 2000000; i++)
             {
                 target.Process(buffers, 64);
             }
