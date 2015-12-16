@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ndaw.Core.Fourier;
 using NSubstitute;
 using NAudio.Wave;
 using NAudio.Dsp;
+using ndaw.Core.Filters.WindowFunctions;
 
 namespace ndaw.Core.Tests.Fourier
 {
@@ -11,16 +13,24 @@ namespace ndaw.Core.Tests.Fourier
     public class FourierTransformTests
     {
         private IFastFourierTransformProvider transformProvider;
+        private IWindowFunction windowFunction;
 
         private FourierTransform target;
 
         [TestInitialize]
         public void TestInitialise()
         {
-            transformProvider = Substitute.For<IFastFourierTransformProvider>();
-            transformProvider.BlackmannHarrisWindow(Arg.Any<int>(), Arg.Any<int>()).Returns(1f);
+            var ones = new float[100];
+            for (int i = 0; i < 100; i++)
+            {
+                ones[i] = 1f;
+            }
 
-            target = new FourierTransform(transformProvider, 1);
+            transformProvider = Substitute.For<IFastFourierTransformProvider>();
+            windowFunction = Substitute.For<IWindowFunction>();
+            windowFunction.CalculateCoefficients(Arg.Any<int>()).Returns(ones);
+
+            target = new FourierTransform(transformProvider, windowFunction, 1);
 
             target.Format = new WaveFormat(44100, 1);
         }
@@ -35,14 +45,21 @@ namespace ndaw.Core.Tests.Fourier
         [ExpectedException(typeof(ArgumentException))]
         public void Should_throw_if_transform_length_is_not_a_power_of_two()
         {
-            target = new FourierTransform(transformProvider, 3);
+            target = new FourierTransform(transformProvider, windowFunction, 3);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Should_throw_if_transform_provider_is_null()
         {
-            target = new FourierTransform(null, 1);
+            target = new FourierTransform(null, windowFunction, 1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Should_throw_if_window_function_is_null()
+        {
+            target = new FourierTransform(transformProvider, null, 1);
         }
 
         [TestMethod]
@@ -110,7 +127,7 @@ namespace ndaw.Core.Tests.Fourier
                 1f, 2f, 3f, 4f
             }};
 
-            target = new FourierTransform(transformProvider, 4);
+            target = new FourierTransform(transformProvider, windowFunction, 4);
             target.Format = new WaveFormat(44100, 1);
 
             target.Process(buffers, 4);
@@ -133,7 +150,7 @@ namespace ndaw.Core.Tests.Fourier
                 1f, 2f, 3f, 4f
             }};
 
-            target = new FourierTransform(transformProvider, 4);
+            target = new FourierTransform(transformProvider, windowFunction, 4);
             target.Format = new WaveFormat(44100, 1);
 
             target.Process(buffers, 4);
@@ -153,7 +170,7 @@ namespace ndaw.Core.Tests.Fourier
         {
             var buffers = new float[][] { new float[4] };
 
-            target = new FourierTransform(transformProvider, 4);
+            target = new FourierTransform(transformProvider, windowFunction, 4);
             target.Format = new WaveFormat(44100, 1);
 
             target.Process(buffers, 4);
@@ -169,7 +186,7 @@ namespace ndaw.Core.Tests.Fourier
         {
             var buffers = new float[][] { new float[16] };
 
-            target = new FourierTransform(transformProvider, 16);
+            target = new FourierTransform(transformProvider, windowFunction, 16);
             target.Format = new WaveFormat(44100, 1);
 
             target.Process(buffers, 16);
@@ -198,7 +215,7 @@ namespace ndaw.Core.Tests.Fourier
                 x[3] = new Complex { X = expected[3], Y = 0f };
             }));
 
-            target = new FourierTransform(transformProvider, 4);
+            target = new FourierTransform(transformProvider, windowFunction, 4);
 
             float[] actual = null;
             target.DataReady += (s, e) => actual = e.Real;
@@ -218,12 +235,10 @@ namespace ndaw.Core.Tests.Fourier
                 1f, 2f, 3f, 4f
             }};
 
-            transformProvider.BlackmannHarrisWindow(Arg.Is<int>(0), Arg.Is<int>(4)).Returns(5f);
-            transformProvider.BlackmannHarrisWindow(Arg.Is<int>(1), Arg.Is<int>(4)).Returns(6f);
-            transformProvider.BlackmannHarrisWindow(Arg.Is<int>(2), Arg.Is<int>(4)).Returns(7f);
-            transformProvider.BlackmannHarrisWindow(Arg.Is<int>(3), Arg.Is<int>(4)).Returns(8f);
+            windowFunction.CalculateCoefficients(Arg.Is(4))
+                .Returns(new[] { 5f, 6f, 7f, 8f });
 
-            target = new FourierTransform(transformProvider, 4);
+            target = new FourierTransform(transformProvider, windowFunction, 4);
             target.Format = new WaveFormat(44100, 1);
 
             target.Process(buffers, 4);
@@ -256,7 +271,7 @@ namespace ndaw.Core.Tests.Fourier
                 x[3] = new Complex { X = expected[3], Y = 0f };
             }));
 
-            target = new FourierTransform(transformProvider, 4);
+            target = new FourierTransform(transformProvider, windowFunction, 4);
 
             float[][] actual = new float[2][];
             target.DataReady += (s, e) => actual[e.Channel] = e.Real;

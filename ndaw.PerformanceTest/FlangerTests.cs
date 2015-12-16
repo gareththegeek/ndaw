@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ndaw.Core.Effects;
 using ndaw.Core.Oscillators;
-using NSubstitute;
 using NAudio.Wave;
 using System.Diagnostics;
 

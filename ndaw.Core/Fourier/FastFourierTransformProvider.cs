@@ -11,10 +11,5 @@ namespace ndaw.Core.Fourier
         {
             FastFourierTransform.FFT(forward, m, data);
         }
-
-        public double BlackmannHarrisWindow(int n, int frameSize)
-        {
-            return FastFourierTransform.BlackmannHarrisWindow(n, frameSize);
-        }
     }
 }

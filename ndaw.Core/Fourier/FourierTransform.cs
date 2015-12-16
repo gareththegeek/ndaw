@@ -1,5 +1,6 @@
 ﻿using NAudio.Dsp;
 using NAudio.Wave;
+using ndaw.Core.Filters.WindowFunctions;
 using ndaw.Core.Routing;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -45,12 +46,16 @@ namespace ndaw.Core.Fourier
         }
 
         private int transformLength;
+        private float[] window;
         private ChannelData[] channels;
         private int m;
         
         public event EventHandler<FourierTransformEventArgs> DataReady;
 
-        public FourierTransform(IFastFourierTransformProvider transformProvider, int transformLength)
+        public FourierTransform(
+            IFastFourierTransformProvider transformProvider, 
+            IWindowFunction windowFunction,
+            int transformLength)
         {
             if (!IsPowerOfTwo(transformLength))
             {
@@ -60,8 +65,13 @@ namespace ndaw.Core.Fourier
             {
                 throw new ArgumentNullException("transformProvider", "Transform provider cannot be null");
             }
+            if (windowFunction == null)
+            {
+                throw new ArgumentNullException("windowFunction", "Window function cannot be null");
+            }
             
             this.transformProvider = transformProvider;
+            this.window = windowFunction.CalculateCoefficients(transformLength);
             this.transformLength = transformLength;
             this.m = (int)Math.Log(transformLength, 2d);
         }
@@ -115,13 +125,11 @@ namespace ndaw.Core.Fourier
 
         private void calculateTransform(ChannelData channel)
         {
-            //TODO call ndaw window function once and store all coefficients in buffer rather than calling NAudio window function per iteration
             for (int i = 0; i < transformLength; i++)
             {
                 channel.Complex[i] = new Complex
                 {
-                    X = (float)(channel.InputHistory[i] 
-                        * transformProvider.BlackmannHarrisWindow(i, transformLength)),
+                    X = channel.InputHistory[i] * window[i],
                     Y = 0f
                 };
             }

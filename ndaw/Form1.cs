@@ -138,14 +138,16 @@ namespace ndaw
 
             filter.Filters.Add(new DigitalFilter
             {
-                FilterFunction = new BandStopFilterFunction(),
-                LowerCutOffFrequency = 10000f,
-                UpperCutOffFrequency = 12000f
+                FilterFunction = new LowPassFilterFunction(),
+                LowerCutOffFrequency = 10000f
             });
 
             filterNode = new MonoSignalNode(monoFormat, filter.FilterImplementation);
 
-            fourier = new FourierTransform(new FastFourierTransformProvider(), 2048);
+            fourier = new FourierTransform(
+                new FastFourierTransformProvider(), 
+                new BlackmanHarrisWindowFunction(),
+                2048);
             fourierNode = new MonoSignalNode(monoFormat, fourier);
             fourier.DataReady += fourierControl.fourier_DataReady;
 
@@ -187,7 +189,10 @@ namespace ndaw
             stereoFilterNode.LeftIn.Source = sineWaveNode.LeftOut;
             stereoFilterNode.RightIn.Source = sineWaveNode.RightOut;
 
-            fourier = new FourierTransform(new FastFourierTransformProvider(), 2048);
+            fourier = new FourierTransform(
+                new FastFourierTransformProvider(),
+                new BlackmanHarrisWindowFunction(),
+                2048);
             fourierNode = new MonoSignalNode(stereoFormat, fourier);
             fourier.DataReady += fourierControl.fourier_DataReady;
 
