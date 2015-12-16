@@ -91,22 +91,30 @@ namespace ndaw.Core.Oscillators
                 throw new ArgumentOutOfRangeException("count", "Count must be equal to or less than buffer length");
             }
 
-            for (int i = 0; i < count; i++)
+            var time = Time;
+            var channels = format.Channels;
+
+            unsafe
             {
-                var sample = Generate(Time);
-
-                for (int j = 0; j < format.Channels; j++)
+                fixed (float* fixedBuffer = buffers[0])
                 {
-                    buffers[j][i] = sample;
-                }
-                
-                Time++;
-            }
-        }
+                    var pBuffer = fixedBuffer;
 
-        private float Generate(int time)
-        {
-            return (2f * (float)((int)(time / halfFrequencyInSamples) % 2) - 1f) * amplitude;
+                    for (int i = 0; i < count; i++)
+                    {
+                        var sample = (2f * (float)((int)(time++ / halfFrequencyInSamples) % 2) - 1f) * amplitude;
+
+                        *pBuffer++ = sample;
+                    }
+                }
+
+                for (int j = 1; j < format.Channels; j++)
+                {
+                    Buffer.BlockCopy(buffers[0], 0, buffers[j], 0, sizeof(float) * count);
+                }
+            }
+
+            Time = time;
         }
     }
 }
