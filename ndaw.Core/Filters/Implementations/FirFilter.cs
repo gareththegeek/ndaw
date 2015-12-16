@@ -11,9 +11,7 @@ namespace ndaw.Core.Filters.Implementations
     public class FirFilter : IFilterImplementation
     {
         // TODO implement coefficient calculator Kaiser
-
-        //TODO reimplement using Matrices and compare performance
-
+        
         public string Name { get { return "FIR Filter"; } [ExcludeFromCodeCoverage]set { } }
 
         private class ChannelData
@@ -58,7 +56,6 @@ namespace ndaw.Core.Filters.Implementations
                     for (int i = 0; i < format.Channels; i++)
                     {
                         channels[i] = new ChannelData();
-                        //channels[i].InputHistory = new float[0];
                     }
                 }
             }
@@ -100,19 +97,12 @@ namespace ndaw.Core.Filters.Implementations
                 throw new InvalidOperationException("Count must be greater than or equal to coefficient length");
             }
 
-            //var inputHistoryLength = Math.Max(count, coefficients.Length);
-
             for (int i = 0; i < format.Channels; i++)
             {
                 var channel = channels[i];
                 var buffer = buffers[i];
 
-                //if (inputHistoryLength > channel.InputHistory.Length)
-                //{
-                //    channel.InputHistory = BufferHelpers.Ensure(channel.InputHistory, inputHistoryLength);
-                //}
-
-                // Using BlockCopy and Math.Net Numerics Matrix is 12 times faster in testing
+                // Using BlockCopy and Math.Net Numerics Matrix is 12 times faster in testing and 4 times faster with small buffers
                 processMatrix(channel, buffer, count);
                 // Unsafe equivalent was approximately 3 times faster in testing
                 //processUnsafe(channel, buffer, count);
