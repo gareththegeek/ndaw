@@ -1,4 +1,5 @@
 ﻿using NAudio.Utils;
+using NAudio.Wave;
 using ndaw.Core.Fourier;
 using SharpDX;
 using SharpDX.Direct2D1;
@@ -19,6 +20,8 @@ namespace ndaw.Graphics.Controls
         private float smoothing = 0.95f;
         private float[] history;
 
+        private WaveFormat format;
+
         public void fourier_DataReady(object sender, FourierTransformEventArgs e)
         {
             if (abortRendering) return;
@@ -30,6 +33,8 @@ namespace ndaw.Graphics.Controls
                 fourierReal = e.Real;
                 fourierImaginary = e.Imaginary;
             }
+
+            format = (sender as FourierTransform).Format;
 
             //if (InvokeRequired)
             //{
@@ -130,8 +135,7 @@ namespace ndaw.Graphics.Controls
                     }
                 }
 
-                //TODO remove magic number for SampleRate
-                var sampleRateOverN = 44100f/*SampleRate*/ / real.Length;
+                var sampleRateOverN = format.SampleRate / real.Length;
                 var maxF = maxI * sampleRateOverN;
                 var minF = minI * sampleRateOverN;
 
